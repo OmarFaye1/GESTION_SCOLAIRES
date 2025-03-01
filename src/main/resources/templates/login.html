@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentification</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="../static/css/bootstrap.css" th:href="@{/css/bootstrap.css}"/>
+    <!-- Font Awesome pour les icônes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
+    <style>
+        body {
+            background-color: #f8f9fa; /* Fond légèrement gris */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Pleine hauteur de la vue */
+            margin: 0;
+        }
+
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombre douce */
+            max-width: 400px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #28a745; /* Couleur verte */
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-control {
+            border-radius: 5px;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #28a745; /* Bordure verte au focus */
+            box-shadow: 0 0 5px rgba(40, 167, 69, 0.5);
+        }
+
+        .btn-success {
+            background-color: #28a745; /* Bouton vert */
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+
+        .btn-success:hover {
+            background-color: #218838; /* Vert plus foncé au survol */
+        }
+
+        .input-icon {
+            position: relative;
+        }
+
+        .input-icon i {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #28a745; /* Couleur des icônes */
+        }
+
+        .input-icon input {
+            padding-left: 35px; /* Espace pour l'icône */
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Authentification</h1>
+    <form th:action="@{/login}" name="login" role="form" method="post" accept-charset="utf-8">
+        <div class="form-group input-icon">
+            <i class="fas fa-user"></i>
+            <input name="username" th:placeholder="Username" class="form-control" type="text" required/>
+        </div>
+        <div class="form-group input-icon">
+            <i class="fas fa-lock"></i>
+            <input name="password" th:placeholder="Password" class="form-control" type="password" required/>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-success">
+                <i class="fas fa-sign-in-alt"></i> Connexion
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- Bootstrap JS et dépendances -->
+<script src="../static/js/jquery-3.7.0.js" th:src="@{/js/jquery-3.7.0.js}"></script>
+<script src="../static/js/bootstrap.js" th:src="@{/js/bootstrap.js}"></script>
+
+</body>
+</html>

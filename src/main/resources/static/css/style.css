@@ -1,0 +1,65 @@
+/* Général pour menus déroulants */
+.dropdown-menu {
+    background-color: #000;
+    color: #fff;
+}
+
+.dropdown-menu > li > a {
+    color: #fff;
+}
+
+.dropdown-menu > li > a:hover {
+    background-color: #444;
+    color: #fff;
+}
+
+/* Sous-menus au survol */
+.dropdown-submenu {
+    position: relative;
+}
+
+.dropdown-submenu:hover > .dropdown-menu {
+    display: block;
+}
+
+.dropdown-submenu > .dropdown-menu {
+    display: none;
+    position: absolute;
+    left: 100%;
+    top: 0;
+    background-color: #000;
+}
+
+.dropdown-submenu > .dropdown-menu > li > a {
+    color: #fff;
+}
+
+.dropdown-submenu > .dropdown-menu > li > a:hover {
+    background-color: #444;
+}
+
+.btn-retour {
+    background-color: #6c757d; /* Couleur de fond */
+    color: white; /* Couleur du texte */
+    padding: 8px 12px; /* Espacement intérieur */
+    border: none; /* Pas de bordure */
+    border-radius: 5px; /* Coins arrondis */
+    cursor: pointer; /* Curseur pointeur */
+    font-size: 16px; /* Taille du texte */
+    transition: background-color 0.3s ease; /* Animation fluide */
+}
+.btn-retour:hover {
+    background-color: #5a6268; /* Couleur au survol */
+}
+.btn-retour:focus {
+    outline: none; /* Supprime le contour bleu au focus */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); /* Effet de halo au focus */
+}
+
+.btn i {
+    font-size: 0.8rem; /* Taille des icônes */
+    padding: 0; /* Évite l'ajout de padding autour des icônes */
+}
+
+
+

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}"/>
+    <link rel="stylesheet" th:href="@{/css/jquery.dataTables.min.css}"/>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script th:src="@{/js/jquery-3.7.0.js}"></script>
+    <script th:src="@{/js/bootstrap.js}"></script>
+    <script th:src="@{/js/jquery.dataTables.min.js}"></script>
+    <title>Gestion des Enseignants</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .container {
+            margin-top: 20px;
+        }
+        h3 {
+            color: #2c3e50;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+        .btn-success, .btn-info, .btn-danger, .btn-warning, .btn-primary {
+            margin: 5px;
+            font-size: 14px;
+            padding: 8px 12px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+        .btn-success:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+        }
+        .btn-info {
+            background-color: #17a2b8;
+            border-color: #17a2b8;
+        }
+        .btn-info:hover {
+            background-color: #138496;
+            border-color: #117a8b;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+        .btn-danger:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+        }
+        .btn-warning {
+            background-color: #ffc107;
+            border-color: #ffc107;
+        }
+        .btn-warning:hover {
+            background-color: #e0a800;
+            border-color: #d39e00;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+        }
+        .table-responsive {
+            margin-top: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .table {
+            width: 100%;
+            margin-bottom: 0;
+        }
+        .table thead th {
+            background-color: #2c3e50;
+            color: white;
+            font-weight: 500;
+            border-bottom: 2px solid #1a252f;
+        }
+        .table tbody tr {
+            transition: background-color 0.3s ease;
+        }
+        .table tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+        .table tbody td {
+            vertical-align: middle;
+        }
+        .modal-content {
+            border-radius: 10px;
+            border: none;
+        }
+        .modal-header {
+            background-color: #2c3e50;
+            color: white;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+        .modal-title {
+            font-weight: 500;
+        }
+        .modal-body .form-group label {
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        .modal-body .form-control {
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            padding: 8px;
+            font-size: 14px;
+        }
+        .modal-footer {
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <br/>
+    <h3 style="text-align: center">Liste des Enseignants</h3>
+
+    <div class="row" style="padding-bottom: 10px; padding-top: 10px">
+        <div style="text-align: center">
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#form_Ajouter_Enseignant">
+                <i class="fas fa-plus"></i> Ajouter Enseignant
+            </button>
+        </div>
+    </div>
+
+    <!-- Début popup ajouter un Enseignant -->
+    <div class="modal fade" id="form_Ajouter_Enseignant">
+        <div class="modal-dialog">
+            <div class="modal-content panel-success">
+                <div class="modal-header panel-heading">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Ajouter un Enseignant</h4>
+                </div>
+                <form th:action="@{/ChefDepartement/ajouterEnseignant}" method="post">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Matricule</label>
+                            <input type="text" class="form-control" name="matricule" required/>
+                        </div>
+                        <div class="form-group">
+                            <label>Nom</label>
+                            <input type="text" class="form-control" name="nom" required/>
+                        </div>
+                        <div class="form-group">
+                            <label>Prénom(s)</label>
+                            <input type="text" class="form-control" name="prenom" required/>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Ajouter</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Annuler</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Fin popup ajouter un Enseignant -->
+
+    <!-- Début liste des Enseignants -->
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped" id="table_Enseignant">
+            <thead>
+            <tr>
+                <th>Matricule</th>
+                <th>Nom</th>
+                <th>Prénom(s)</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="enseignant : ${enseignants}">
+                <td th:text="${enseignant.matricule}"></td>
+                <td th:text="${enseignant.nom}"></td>
+                <td th:text="${enseignant.prenom}"></td>
+                <td>
+                    <button class="btn btn-info btn-sm" data-toggle="modal" th:attr="data-target='#form_Modifier_Enseignant' + ${enseignant.id}">
+                        <i class="fas fa-edit"></i> Modifier
+                    </button>
+                    <button th:if="${enseignant.isActive()} == false" class="btn btn-success btn-sm" data-toggle="modal" th:attr="data-target='#form_Activer_Enseignant' + ${enseignant.id}">
+                        <i class="fas fa-check"></i> Activer
+                    </button>
+                    <button th:if="${enseignant.isActive()} == true" class="btn btn-danger btn-sm" data-toggle="modal" th:attr="data-target='#form_Activer_Enseignant' + ${enseignant.id}">
+                        <i class="fas fa-times"></i> Désactiver
+                    </button>
+                    <button th:if="${enseignant.isArchive()} == false" class="btn btn-warning btn-sm" data-toggle="modal" th:attr="data-target='#form_Archiver_Enseignant' + ${enseignant.id}">
+                        <i class="fas fa-archive"></i> Archiver
+                    </button>
+                    <button th:if="${enseignant.isArchive()} == true" class="btn btn-primary btn-sm" data-toggle="modal" th:attr="data-target='#form_Archiver_Enseignant' + ${enseignant.id}">
+                        <i class="fas fa-box-open"></i> Désarchiver
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- Fin liste des Enseignants -->
+
+    <!-- Script pour DataTable -->
+    <script>
+        $(document).ready(function() {
+            $("#table_Enseignant").DataTable();
+        });
+    </script>
+</div>
+</body>
+</html>

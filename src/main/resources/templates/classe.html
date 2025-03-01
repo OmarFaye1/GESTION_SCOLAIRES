@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" th:href="@{/css/bootstrap.css}"/>
+  <link  rel="stylesheet" href="../static/css/style.css" th:href="@{/css/style.css}"/>
+  <link rel="stylesheet" th:href="@{/css/buttons.dataTables.min.css}"/>
+  <link rel="stylesheet" th:href="@{/css/jquery.dataTables.min.css}"/>
+  <script th:src="@{/js/jquery-3.7.0.js}"></script>
+  <script th:src="@{/js/bootstrap.js}"></script>
+  <script th:src="@{/js/dataTables.buttons.min.js}"></script>
+  <script th:src="@{/js/jquery.dataTables.min.js}"></script>
+
+  <title>Classe</title>
+</head>
+<body>
+<div class="container">
+  <div class="row" style="padding-bottom: 10px; padding-top: 10px">
+    <div style="text-align: center">
+      <h3>La liste des Classe</h3>
+      <button type="button" class="btn btn-success" data-toggle="modal" data-target="#form_Ajouter_Classe">Ajouter Classe</button>
+    </div>
+  </div>
+
+  <!-- Début popup ajouter une classe -->
+  <div class="modal fade" id="form_Ajouter_Classe" tabindex="-1" role="dialog" aria-labelledby="formAjouterClasseTitle" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content panel-success">
+        <!-- Modal Header -->
+        <div class="modal-header panel-heading">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Ajouter une Classe </h4>
+        </div>
+        <!-- Modal Body -->
+        <form th:action="@{/ajouter_classe}" method="post">
+          <div class="modal-body">
+            <!-- Champs du formulaire -->
+            <div class="form-group">
+              <label>Code</label>
+              <input type="text" class="form-control" name="code" />
+            </div>
+            <div class="form-group">
+              <label>Libelle</label>
+              <input type="text" class="form-control" name="libelle" />
+            </div>
+            <div class="form-group">
+              <label>Effectif</label>
+              <input type="number" class="form-control" name="effectif"/>
+            </div>
+
+          </div>
+          <!-- Modal Footer -->
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-success">Enregistrer</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!-- Fin popup ajouter une Classe -->
+
+  <div class="table-responsive">
+    <table class="table table-bordered table-striped" id="table_Classe">
+      <thead>
+      <tr>
+        <th>Code</th>
+        <th>Libellé</th>
+        <th>Effectif</th>
+
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="classe : ${listeDesClasse}">
+        <td th:text="${classe.code}"></td>
+        <td th:text="${classe.libelle}"></td>
+        <td th:text="${classe.effectif}"></td>
+
+        <td>
+          <button class="btn btn-info btn-sm" data-toggle="modal" th:attr="data-target='#form_Modifier_Classe' + ${classe.id}">Modifier</button>
+          <button class="btn btn-danger btn-sm" data-toggle="modal" th:attr="data-target='#form_Supprimer_Classe' + ${classe.id}">Supprimer</button>
+          <a class="btn btn-primary btn-sm" th:href="@{/details_classe(id=${classe.id})}">Voir</a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Script pour DataTable -->
+  <script>
+    $(document).ready(function() {
+        $("#table_Classe").DataTable();
+    });
+  </script>
+
+  <!-- Début popup modifier une Classe -->
+  <div th:each="classe : ${listeDesClasse}" class="modal fade" th:attr="id='form_Modifier_Classe' + ${classe.id}" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content panel-info">
+        <div class="modal-header panel-heading">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Modifier Classe</h4>
+        </div>
+        <form th:action="@{/modifier_classe}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${classe.id}" />
+            <!-- Champs du formulaire de modification -->
+            <div class="form-group">
+              <label>Code</label>
+              <input type="text" class="form-control" name="code" th:value="${classe.code}"/>
+            </div>
+            <div class="form-group">
+              <label>Libelle</label>
+              <input type="text" class="form-control" name="libelle" th:value="${classe.libelle}"/>
+            </div>
+            <div class="form-group">
+              <label>Credits</label>
+              <input type="number" class="form-control" name="effectif" th:value="${classe.effectif}"/>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-info">Enregistrer les modifications</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!-- Fin popup modifier une Classe -->
+
+  <!-- Début popup supprimer une Classe -->
+  <div th:each="classe : ${listeDesClasse}" class="modal fade" th:attr="id='form_Supprimer_Classe' + ${classe.id}" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content panel-danger">
+        <div class="modal-header panel-heading">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Supprimer Classe</h4>
+        </div>
+        <form th:action="@{/supprimer_ue}" method="post">
+          <div class="modal-body">
+            <p>Êtes-vous sûr de vouloir supprimer cette Classe ?</p>
+            <input type="hidden" name="id" th:value="${classe.id}" />
+
+            <div class="form-group">
+              <label>Code</label>
+              <input type="text" class="form-control" name="code" th:value="${classe.code}"/>
+            </div>
+            <div class="form-group">
+              <label>Libelle</label>
+              <input type="text" class="form-control" name="libelle" th:value="${classe.libelle}"/>
+            </div>
+            <div class="form-group">
+              <label>Credits</label>
+              <input type="number" class="form-control" name="effectif" th:value="${classe.effectif}"/>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-danger">Supprimer</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!-- Fin popup supprimer un Classe -->
+  <!-- Bouton Retour -->
+  <div>
+    <button class="btn-retour" onclick="window.location.href='/ChefDepartement/Accueil'">Retour</button>
+  </div>
+</div>
+</body>
+</html>
