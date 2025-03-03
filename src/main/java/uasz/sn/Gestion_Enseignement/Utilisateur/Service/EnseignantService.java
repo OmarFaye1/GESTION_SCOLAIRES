@@ -25,7 +25,7 @@ public class EnseignantService {
         return enseignantRepository.save(enseignant);
     }
 
-    public List<Enseignant> liste() { // Méthode en minuscules
+    public List<Enseignant> liste() {
         return enseignantRepository.findAll();
     }
 
@@ -47,6 +47,41 @@ public class EnseignantService {
     public void archiver(Long id) {
         Enseignant enseignant = rechercher(id);
         enseignant.setArchive(true);
+        enseignantRepository.save(enseignant);
+    }
+
+    public Enseignant rechercherParEmail(String email) {
+        return enseignantRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Enseignant avec email " + email + " n'existe pas"));
+    }
+
+    public void supprimer(Long id) {
+        Enseignant enseignant = rechercher(id);
+        enseignantRepository.delete(enseignant);
+    }
+
+    public Enseignant rechercherParMatricule(String matricule) {
+        return enseignantRepository.findByMatricule(matricule)
+                .orElseThrow(() -> new ResourceNotFoundException("Enseignant avec matricule " + matricule + " n'existe pas"));
+    }
+
+    public List<Enseignant> listerEnseignantsActifs() {
+        return enseignantRepository.findByActiveTrue();
+    }
+
+    public List<Enseignant> listerEnseignantsArchives() {
+        return enseignantRepository.findByArchiveTrue();
+    }
+
+    public void desactiver(Long id) {
+        Enseignant enseignant = rechercher(id);
+        enseignant.setActive(false);
+        enseignantRepository.save(enseignant);
+    }
+
+    public void desarchiver(Long id) {
+        Enseignant enseignant = rechercher(id);
+        enseignant.setArchive(false);
         enseignantRepository.save(enseignant);
     }
 }

@@ -26,8 +26,8 @@ public class UtilisateurController {
     public  String login(Principal principal){
         String url = "login";
         Utilisateur utilisateur = utilisateurService.rechercher_Utilisateur(principal.getName());
-        if (utilisateur.getRoles().get(0).getRole().equals("Permanent")){
-            url = "redirect:/Permanent/Accueil ";
+        if (utilisateur.getRoles().get(0).getRole().equals("Enseignant")){
+            url = "redirect:/Enseignant/Accueil ";
         } else if (utilisateur.getRoles().get(0).getRole().equals("Vacataire")) {
             url = "redirect:/Vacataire/Accueil ";
         } else if (utilisateur.getRoles().get(0).getRole().equals("ChefDepartement")) {

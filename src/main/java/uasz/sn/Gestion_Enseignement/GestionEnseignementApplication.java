@@ -8,8 +8,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import uasz.sn.Gestion_Enseignement.Authentification.modele.Role;
 import uasz.sn.Gestion_Enseignement.Authentification.service.UtilisateurService;
 import uasz.sn.Gestion_Enseignement.Utilisateur.Modele.Enseignant;
-import uasz.sn.Gestion_Enseignement.Utilisateur.Modele.Eleves;
 import uasz.sn.Gestion_Enseignement.Utilisateur.Service.EnseignantsService;
+import uasz.sn.Gestion_Enseignement.Classes.modele.Eleve; // ✅ Import ajouté pour Eleve
 
 import java.util.Date;
 
@@ -37,7 +37,7 @@ public class GestionEnseignementApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		// Ajout des rôles
 		/*Role enseignantRole = utilisateurService.ajouter_Role(new Role("Enseignant"));
-		Role eleveRole = utilisateurService.ajouter_Role(new Role("Eleve"));
+
 		Role chefDepartementRole = utilisateurService.ajouter_Role(new Role("ChefDepartement"));
 
 		// Mot de passe crypté
@@ -48,10 +48,6 @@ public class GestionEnseignementApplication implements CommandLineRunner {
 		enseignantsService.ajouter(enseignant);
 		utilisateurService.ajouter_UtilisateurRoles(enseignant, enseignantRole);
 
-		// Création et ajout d'un élève
-		Eleves eleve = createEleve("MALACK", "Camin", "cmalack@uasz.sn", password);
-		enseignantsService.ajouter(eleve);
-		utilisateurService.ajouter_UtilisateurRoles(eleve, eleveRole);
 
 		// Création et ajout d'un chef de département
 		Enseignant chefDepartement = createEnseignant("DIAGNE", "Serigne", "sdiagne@uasz.sn", "SD2024", password);
@@ -59,7 +55,7 @@ public class GestionEnseignementApplication implements CommandLineRunner {
 		utilisateurService.ajouter_UtilisateurRoles(chefDepartement, chefDepartementRole);
 	}
 
-	// Méthode utilitaire pour créer un enseignant
+	// ✅ Méthode utilitaire pour créer un enseignant
 	private Enseignant createEnseignant(String nom, String prenom, String username, String matricule, String password) {
 		Enseignant enseignant = new Enseignant();
 		enseignant.setNom(nom);
@@ -69,18 +65,8 @@ public class GestionEnseignementApplication implements CommandLineRunner {
 		enseignant.setActive(true);
 		enseignant.setMatricule(matricule);
 		enseignant.setDateCreation(new Date());
-		return enseignant;
+		return enseignant;*/
 	}
 
-	// Méthode utilitaire pour créer un élève
-	private Eleves createEleve(String nom, String prenom, String username, String password) {
-		Eleves eleve = new Eleves();
-		eleve.setNom(nom);
-		eleve.setPrenom(prenom);
-		eleve.setUsername(username);
-		eleve.setPassword(password);
-		eleve.setActive(true);
-		eleve.setDateCreation(new Date());
-		return eleve;*/
-	}
+
 }

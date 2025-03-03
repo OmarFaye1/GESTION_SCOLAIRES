@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}"/>
+    <title>Notes de l'Élève</title>
+</head>
+<body>
+<div class="container">
+    <h1>Notes de l'Élève</h1>
+    <a th:href="@{/notes/ajouter/{eleveId}(eleveId=${eleveId})}" class="btn btn-success">Ajouter une note</a>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Matière</th>
+            <th>Note</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="note : ${notes}">
+            <td th:text="${note.matiereId}"></td> <!-- Afficher le nom de la matière -->
+            <td th:text="${note.note}"></td>
+            <td>
+                <a th:href="@{/notes/supprimer/{id}(id=${note.id})}" class="btn btn-danger">Supprimer</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

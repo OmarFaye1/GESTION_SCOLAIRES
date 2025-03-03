@@ -1,35 +1,50 @@
 package uasz.sn.Gestion_Enseignement.Classes.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import uasz.sn.Gestion_Enseignement.Classes.modele.Eleve;
 import uasz.sn.Gestion_Enseignement.Classes.service.EleveService;
 
 @Controller
+@RequestMapping("/eleve")
 public class EleveController {
 
     @Autowired
     private EleveService eleveService;
 
-    @RequestMapping(value = "/ajouter_eleve_classe", method = RequestMethod.POST)
-    public String ajouter_eleve_classe(Model model, Eleve eleve){
-        eleveService.ajouterEleve(eleve); // ✅ Correction ici
-        return "redirect:/details_classe?id="+ eleve.getClasse().getId();
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    // ✅ Ajouter un élève
+    @PostMapping("/ajouter")
+    public String ajouterEleve(@ModelAttribute Eleve eleve) {
+        if (eleve.getUsername() == null || eleve.getUsername().trim().isEmpty()) {
+            throw new IllegalArgumentException("Le champ username ne peut pas être vide.");
+        }
+        if (eleve.getPassword() == null || eleve.getPassword().trim().isEmpty()) {
+            throw new IllegalArgumentException("Le mot de passe ne peut pas être vide.");
+        }
+
+        // ✅ Hasher le mot de passe avant insertion
+        eleve.setPassword(passwordEncoder.encode(eleve.getPassword()));
+
+        eleveService.ajouterEleve(eleve);
+        return "redirect:/details_classe?id=" + eleve.getClasse().getId();
     }
 
-    @RequestMapping(value = "/modifier_eleve_classe", method = RequestMethod.POST)
-    public String modifier_eleve_classe(Model model, Eleve eleve){
+    // ✅ Modifier un élève
+    @PostMapping("/modifier")
+    public String modifierEleve(@ModelAttribute Eleve eleve) {
         eleveService.modifierEleve(eleve);
-        return "redirect:/details_classe?id="+ eleve.getClasse().getId();
+        return "redirect:/details_classe?id=" + eleve.getClasse().getId();
     }
 
-    @RequestMapping(value = "/supprimer_eleve_classe", method = RequestMethod.POST)
-    public String supprimer_eleve_classe(Model model, Eleve eleve){
-        Long id = eleve.getClasse().getId();
-        eleveService.supprimerEC(eleve);
-        return "redirect:/details_classe?id="+id;
+    // ✅ Supprimer un élève
+    @PostMapping("/supprimer")
+    public String supprimerEleve(@RequestParam("id") Long eleveId, @RequestParam("classeId") Long classeId) {
+        eleveService.supprimerEleve(eleveId);
+        return "redirect:/details_classe?id=" + classeId;
     }
 }

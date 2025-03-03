@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import uasz.sn.Gestion_Enseignement.Classes.modele.Eleve;
 import uasz.sn.Gestion_Enseignement.Classes.repository.EleveRepository;
 import uasz.sn.Gestion_Enseignement.Classes.modele.Classe;
+import uasz.sn.Gestion_Enseignement.exception.ResourceNotFoundException;
 
 import java.util.List;
 
@@ -20,6 +21,7 @@ public class EleveService {
         eleveRepository.save(eleve);
     }
 
+
     public List<Eleve> afficherToutEleve() {
         return eleveRepository.findAll();
     }
@@ -28,10 +30,15 @@ public class EleveService {
         return eleveRepository.findById(id).orElse(null);
     }
 
+    public Eleve rechercherEleveParId(Long id) {
+        return eleveRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Élève avec ID " + id + " n'existe pas"));
+    }
+
     public void modifierEleve(Eleve eleve) {
         Eleve eleveUpdate = eleveRepository.findById(eleve.getId()).orElse(null);
         if (eleveUpdate != null) {
-            eleveUpdate.setCode(eleve.getCode());
+
             eleveUpdate.setNom(eleve.getNom());
             eleveUpdate.setPrenom(eleve.getPrenom());
             eleveUpdate.setAdresse(eleve.getAdresse());
@@ -39,12 +46,14 @@ public class EleveService {
         }
     }
 
-    public void supprimerEC(Eleve eleve) {
+    public void supprimerEleve(Long id) {
+        Eleve eleve = eleveRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Élève avec ID " + id + " non trouvé."));
         eleveRepository.delete(eleve);
     }
 
     // Nouvelle méthode pour afficher les élèves par classe
     public List<Eleve> afficherElevesParClasse(Classe classe) {
-        return eleveRepository.findByClasse(classe); // Supposons que vous avez cette méthode dans le repository
+        return eleveRepository.findByClasse(classe);
     }
 }

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" th:href="@{/css/bootstrap.css}"/>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+  <title>Saisir les notes</title>
+</head>
+<body>
+<div class="container">
+  <h1>Saisir les notes pour <span th:text="${eleve.prenom}"></span> <span th:text="${eleve.nom}"></span></h1>
+  <form th:action="@{/enseignant/enregistrerNotes}" method="post">
+    <input type="hidden" name="eleveId" th:value="${eleve.id}">
+    <div th:each="matiere : ${matieres}">
+      <label th:text="${matiere.nom}"></label>
+      <input type="number" th:name="${'note_' + matiere.id}" class="form-control" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Enregistrer</button>
+  </form>
+</div>
+</body>
+</html>

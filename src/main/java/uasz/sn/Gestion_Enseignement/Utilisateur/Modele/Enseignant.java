@@ -13,4 +13,7 @@ import lombok.NoArgsConstructor;
 @PrimaryKeyJoinColumn(name = "id")
 public class Enseignant extends Enseignants {
     private String matricule;
+    private String email;
+    private boolean active = true; // Par défaut, un enseignant est actif
+    private boolean archive = false; // Par défaut, un enseignant n'est pas archivé
 }

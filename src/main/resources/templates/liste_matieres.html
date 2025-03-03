@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}"/>
+    <title>Liste des Matières</title>
+</head>
+<body>
+<div class="container">
+    <h1>Liste des Matières</h1>
+    <a th:href="@{/matieres/ajouter}" class="btn btn-success">Ajouter une matière</a>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nom</th>
+            <th>Code</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="matiere : ${matieres}">
+            <td th:text="${matiere.id}"></td>
+            <td th:text="${matiere.nom}"></td>
+            <td th:text="${matiere.code}"></td>
+            <td>
+                <a th:href="@{/matieres/modifier/{id}(id=${matiere.id})}" class="btn btn-primary">Modifier</a>
+                <a th:href="@{/matieres/supprimer/{id}(id=${matiere.id})}" class="btn btn-danger">Supprimer</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

@@ -38,7 +38,7 @@ public class EnseignantController {
         Utilisateur utilisateur = utilisateurService.rechercher_Utilisateur(principal.getName());
         model.addAttribute("nom", utilisateur.getNom());
         model.addAttribute("prenom", utilisateur.getPrenom().charAt(0));
-        return "template_Enseignant";
+        return "template_enseignant";
     }
 
     @RequestMapping(value = "/ChefDepartement/Accueil", method = RequestMethod.GET)
