@@ -44,13 +44,13 @@ public class GestionEnseignementApplication implements CommandLineRunner {
 		String password = passwordEncoder.encode("Passer123");
 
 		// Création et ajout d'un enseignant
-		Enseignant enseignant = createEnseignant("DIOP", "Ibrahima", "idiop@uasz.sn", "ID2024", password);
+		Enseignant enseignant = createEnseignant("NDOYE", "Malick", "mndoye@uasz.sn", "ID2024", password);
 		enseignantsService.ajouter(enseignant);
 		utilisateurService.ajouter_UtilisateurRoles(enseignant, enseignantRole);
 
 
 		// Création et ajout d'un chef de département
-		Enseignant chefDepartement = createEnseignant("DIAGNE", "Serigne", "sdiagne@uasz.sn", "SD2024", password);
+		Enseignant chefDepartement = createEnseignant("GAYE", "Cheikh", "cgaye@uasz.sn", "SD2024", password);
 		enseignantsService.ajouter(chefDepartement);
 		utilisateurService.ajouter_UtilisateurRoles(chefDepartement, chefDepartementRole);
 	}
