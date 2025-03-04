@@ -28,6 +28,8 @@ public class EspaceEnseignantController {
         return "template_enseignant";
     }
 
+
+
     // Afficher les élèves de la classe demandée
     @PostMapping("/enseignant/afficherEleves")
     public String afficherEleves(@RequestParam("codeClasse") String codeClasse, Model model) {

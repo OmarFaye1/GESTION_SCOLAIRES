@@ -5,11 +5,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import uasz.sn.Gestion_Enseignement.Authentification.modele.Role;
 import uasz.sn.Gestion_Enseignement.Authentification.modele.Utilisateur;
 import uasz.sn.Gestion_Enseignement.Authentification.service.UtilisateurService;
+import uasz.sn.Gestion_Enseignement.Classes.modele.Eleve;
+import uasz.sn.Gestion_Enseignement.Classes.service.EleveService; // ✅ Import du service EleveService
+import uasz.sn.Gestion_Enseignement.Classes.service.NoteService;
 import uasz.sn.Gestion_Enseignement.Utilisateur.Modele.Enseignant;
 import uasz.sn.Gestion_Enseignement.Utilisateur.Service.EnseignantService;
 
@@ -20,12 +22,15 @@ import java.util.List;
 
 @Controller
 public class EnseignantController {
+
     @Autowired
     private UtilisateurService utilisateurService;
 
     @Autowired
     private EnseignantService enseignantService;
 
+    @Autowired
+    private EleveService eleveService; // ✅ Injection du service pour gérer les élèves
 
     private PasswordEncoder passwordEncoder;
 
@@ -82,5 +87,28 @@ public class EnseignantController {
     public String archiver_Enseignant(Long id) {
         enseignantService.archiver(id);
         return "redirect:/ChefDepartement/Enseignant";
+    }
+
+    // ✅ Ajout de l'injection correcte du service EleveService pour éviter l'erreur
+    @GetMapping("enseignant/saisirNotes")
+    public String saisirNotes(@RequestParam("id") Long eleveId, Model model) {
+        // Charger l'élève à partir de l'ID
+        Eleve eleve = eleveService.rechercherEleveParId(eleveId);
+        model.addAttribute("eleve", eleve);
+
+        return "saisir_notes"; // Assure-toi que ce fichier existe
+    }
+
+    @Autowired
+    private NoteService noteService; // Assurez-vous d'avoir un service pour gérer les notes
+
+    @PostMapping("enseignant/enregistrerNotes")
+    public String enregistrerNotes(@RequestParam("eleveId") Long eleveId,
+                                   @RequestParam("matiere") String matiere,
+                                   @RequestParam("note") double valeurNote) {
+        // Enregistrer la note
+        noteService.enregistrerNote(eleveId, matiere, valeurNote);
+
+        return "redirect:/enseignant/espace"; // Redirige vers l'espace enseignant
     }
 }

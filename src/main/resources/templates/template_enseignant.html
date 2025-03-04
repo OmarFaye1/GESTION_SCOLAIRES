@@ -122,7 +122,7 @@
 
   <!-- Liste des élèves -->
   <div th:if="${eleves != null and not #lists.isEmpty(eleves)}">
-    <h2>Liste des élèves de la classe <span th:text="${classe.code}"></span></h2>
+    <h2>Liste des élèves de la classe <span th:text="${classe.libelle}"></span></h2>
     <table>
       <thead>
       <tr>

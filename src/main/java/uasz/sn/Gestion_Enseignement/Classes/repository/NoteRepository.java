@@ -10,8 +10,10 @@ public interface NoteRepository extends JpaRepository<Note, Long> {
     List<Note> findByEleveId(Long eleveId);
 
     // Trouver toutes les notes d'une matière
-    List<Note> findByMatiereId(Long matiereId);
+    List<Note> findByMatiere(String matiere);
 
     // Trouver une note spécifique pour un élève et une matière
-    Note findByEleveIdAndMatiereId(Long eleveId, Long matiereId);
+    Note findByEleveIdAndMatiere(Long eleveId, String matiere);
+
+
 }

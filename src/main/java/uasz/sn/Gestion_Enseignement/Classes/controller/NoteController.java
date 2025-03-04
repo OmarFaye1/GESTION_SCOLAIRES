@@ -16,7 +16,7 @@ public class NoteController {
     @Autowired
     private NoteService noteService;
 
-    // Afficher toutes les notes d'un élève
+    // ✅ Afficher toutes les notes d'un élève
     @GetMapping("/eleve/{eleveId}")
     public String listerNotesParEleve(@PathVariable Long eleveId, Model model) {
         List<Note> notes = noteService.trouverNotesParEleve(eleveId);
@@ -25,7 +25,7 @@ public class NoteController {
         return "liste_notes_eleve";
     }
 
-    // Afficher le formulaire pour ajouter ou modifier une note
+    // ✅ Afficher le formulaire pour ajouter une note
     @GetMapping("/ajouter/{eleveId}")
     public String afficherFormulaireNote(@PathVariable Long eleveId, Model model) {
         model.addAttribute("note", new Note());
@@ -33,7 +33,7 @@ public class NoteController {
         return "ajouter_note";
     }
 
-    // Enregistrer une note
+    // ✅ Enregistrer une note
     @PostMapping("/ajouter/{eleveId}")
     public String enregistrerNote(@PathVariable Long eleveId, @ModelAttribute Note note) {
         note.setEleveId(eleveId);
@@ -41,7 +41,7 @@ public class NoteController {
         return "redirect:/notes/eleve/" + eleveId;
     }
 
-    // Supprimer une note
+    // ✅ Supprimer une note
     @GetMapping("/supprimer/{id}")
     public String supprimerNote(@PathVariable Long id) {
         Note note = noteService.trouverNoteParId(id);

@@ -13,39 +13,19 @@ public class Note {
     private Long id;
 
     private Long eleveId;
-    private Long matiereId;
-    private double note;
+    private String matiere;
+    private double note; // ✅ S'assurer que c'est bien un double
 
     // Getters et setters
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public Long getEleveId() { return eleveId; }
+    public void setEleveId(Long eleveId) { this.eleveId = eleveId; }
 
-    public Long getEleveId() {
-        return eleveId;
-    }
+    public String getMatiere() { return matiere; }
+    public void setMatiere(String matiere) { this.matiere = matiere; }
 
-    public void setEleveId(Long eleveId) {
-        this.eleveId = eleveId;
-    }
-
-    public Long getMatiereId() {
-        return matiereId;
-    }
-
-    public void setMatiereId(Long matiereId) {
-        this.matiereId = matiereId;
-    }
-
-    public double getNote() {
-        return note;
-    }
-
-    public void setNote(double note) {
-        this.note = note;
-    }
+    public double getNote() { return note; } // ✅ Vérifier que le type de retour est double
+    public void setNote(double note) { this.note = note; } // ✅ Correction ici
 }
