@@ -17,7 +17,7 @@ public class NoteService {
     // ✅ Trouver les notes d'un élève
     public List<Note> trouverNotesParEleve(Long eleveId) {
         return noteRepository.findByEleveId(eleveId);
-    }
+    } // ✅ Fermeture correcte de la méthode
 
     // ✅ Trouver une note par ID
     public Note trouverNoteParId(Long id) {
@@ -25,17 +25,18 @@ public class NoteService {
         return note.orElseThrow(() -> new RuntimeException("Note introuvable avec l'ID : " + id));
     }
 
-    // ✅ Enregistrer une note en passant un objet Note
+    // ✅ Enregistrer une note
     public void enregistrerNote(Note note) {
         noteRepository.save(note);
     }
 
-    // ✅ Nouvelle méthode qui accepte directement les paramètres
-    public void enregistrerNote(Long eleveId, String matiere, double valeurNote) {
+    // ✅ Enregistrer une note avec les deux valeurs (Devoir et Composition)
+    public void enregistrerNote(Long eleveId, String matiere, double noteDevoir, double noteComposition) {
         Note note = new Note();
         note.setEleveId(eleveId);
         note.setMatiere(matiere);
-        note.setNote(valeurNote); // ✅ Correction ici
+        note.setNoteDevoir(noteDevoir);
+        note.setNoteComposition(noteComposition);
 
         noteRepository.save(note);
     }

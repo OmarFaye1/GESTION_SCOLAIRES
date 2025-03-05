@@ -14,7 +14,8 @@ public class Note {
 
     private Long eleveId;
     private String matiere;
-    private double note; // ✅ S'assurer que c'est bien un double
+    private double noteDevoir; // ✅ Ajout de la note du devoir
+    private double noteComposition; // ✅ Ajout de la note de composition
 
     // Getters et setters
     public Long getId() { return id; }
@@ -26,6 +27,9 @@ public class Note {
     public String getMatiere() { return matiere; }
     public void setMatiere(String matiere) { this.matiere = matiere; }
 
-    public double getNote() { return note; } // ✅ Vérifier que le type de retour est double
-    public void setNote(double note) { this.note = note; } // ✅ Correction ici
+    public double getNoteDevoir() { return noteDevoir; }
+    public void setNoteDevoir(double noteDevoir) { this.noteDevoir = noteDevoir; }
+
+    public double getNoteComposition() { return noteComposition; }
+    public void setNoteComposition(double noteComposition) { this.noteComposition = noteComposition; }
 }

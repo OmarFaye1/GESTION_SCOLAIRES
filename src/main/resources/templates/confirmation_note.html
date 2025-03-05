@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}"/>
+    <title>Confirmation de la note</title>
+    <style>
+        /* ✅ Styles globaux */
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 500px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column; /* ✅ Affichage vertical */
+            align-items: center;
+        }
+
+        h1 {
+            color: #007bff;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border-color: #c3e6cb;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .card-body {
+            padding: 20px;
+            display: flex;
+            flex-direction: column; /* ✅ Aligner verticalement */
+        }
+
+        .card-title {
+            color: #007bff;
+            font-size: 1.3rem;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .card-text {
+            font-size: 1.1rem;
+            color: #333;
+            text-align: center;
+        }
+
+        .card-text strong {
+            color: #007bff;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+            text-align: center;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Confirmation de la note</h1>
+
+    <div class="alert alert-success">
+        ✅ Les notes ont été enregistrées avec succès !
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Informations de l'élève</h5>
+            <p class="card-text">
+                <strong>Nom :</strong> <span th:text="${eleve.nom}"></span><br>
+                <strong>Prénom :</strong> <span th:text="${eleve.prenom}"></span>
+            </p>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Détails des notes</h5>
+            <p class="card-text">
+                <strong>Matière :</strong> <span th:text="${matiere}"></span><br>
+                <strong>Note Devoir :</strong> <span th:text="${noteDevoir}"></span><br>
+                <strong>Note Composition :</strong> <span th:text="${noteComposition}"></span>
+            </p>
+        </div>
+    </div>
+
+    <a th:href="@{/enseignant/espace}" class="btn btn-primary">Retour à l'espace enseignant</a>
+</div>
+</body>
+</html>

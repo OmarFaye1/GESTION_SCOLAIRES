@@ -30,6 +30,10 @@ public class EnseignantController {
     private EnseignantService enseignantService;
 
     @Autowired
+    private NoteService noteService;
+
+
+    @Autowired
     private EleveService eleveService; // ✅ Injection du service pour gérer les élèves
 
     private PasswordEncoder passwordEncoder;
@@ -89,26 +93,35 @@ public class EnseignantController {
         return "redirect:/ChefDepartement/Enseignant";
     }
 
-    // ✅ Ajout de l'injection correcte du service EleveService pour éviter l'erreur
+    // ✅ Afficher la page de saisie des notes
     @GetMapping("enseignant/saisirNotes")
     public String saisirNotes(@RequestParam("id") Long eleveId, Model model) {
         // Charger l'élève à partir de l'ID
         Eleve eleve = eleveService.rechercherEleveParId(eleveId);
         model.addAttribute("eleve", eleve);
 
-        return "saisir_notes"; // Assure-toi que ce fichier existe
+        return "saisir_notes";
     }
 
-    @Autowired
-    private NoteService noteService; // Assurez-vous d'avoir un service pour gérer les notes
-
+    // ✅ Enregistrer les deux notes (Devoir et Composition)
     @PostMapping("enseignant/enregistrerNotes")
     public String enregistrerNotes(@RequestParam("eleveId") Long eleveId,
                                    @RequestParam("matiere") String matiere,
-                                   @RequestParam("note") double valeurNote) {
-        // Enregistrer la note
-        noteService.enregistrerNote(eleveId, matiere, valeurNote);
+                                   @RequestParam("noteDevoir") double noteDevoir,
+                                   @RequestParam("noteComposition") double noteComposition,
+                                   Model model) {
+        // Enregistrer la note dans la base de données
+        noteService.enregistrerNote(eleveId, matiere, noteDevoir, noteComposition);
 
-        return "redirect:/enseignant/espace"; // Redirige vers l'espace enseignant
+        // Récupérer l'élève pour afficher ses informations
+        Eleve eleve = eleveService.rechercherEleveParId(eleveId);
+
+        // Ajouter les données au modèle
+        model.addAttribute("eleve", eleve);
+        model.addAttribute("matiere", matiere);
+        model.addAttribute("noteDevoir", noteDevoir);
+        model.addAttribute("noteComposition", noteComposition);
+
+        return "confirmation_note"; // Redirige vers la page de confirmation
     }
 }
