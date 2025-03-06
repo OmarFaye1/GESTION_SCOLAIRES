@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}"/>
+    <title>Saisir les notes</title>
+</head>
+<body>
+<div class="container">
+    <h1>Saisie des notes pour <span th:text="${eleve.nom}"></span> <span th:text="${eleve.prenom}"></span></h1>
+
+    <!-- Formulaire de saisie des notes -->
+    <form th:action="@{/enseignant/enregistrerNotes}" method="post">
+        <input type="hidden" name="eleveId" th:value="${eleve.id}"/>
+        <input type="hidden" name="matiereId" th:value="${matiere.id}"/>
+
+        <div class="form-group">
+            <label>Matière :</label>
+            <input type="text" class="form-control" th:value="${matiere.nom}" readonly/>
+        </div>
+
+        <div class="form-group">
+            <label for="noteDevoir">Note Devoir :</label>
+            <input type="number" id="noteDevoir" name="noteDevoir" class="form-control" step="0.01" required>
+        </div>
+
+        <div class="form-group">
+            <label for="noteComposition">Note Composition :</label>
+            <input type="number" id="noteComposition" name="noteComposition" class="form-control" step="0.01" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Enregistrer</button>
+    </form>
+</div>
+</body>
+</html>

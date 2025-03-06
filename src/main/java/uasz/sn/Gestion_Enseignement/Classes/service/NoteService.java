@@ -2,8 +2,12 @@ package uasz.sn.Gestion_Enseignement.Classes.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import uasz.sn.Gestion_Enseignement.Classes.modele.Eleve;
+import uasz.sn.Gestion_Enseignement.Classes.modele.Matiere;
 import uasz.sn.Gestion_Enseignement.Classes.modele.Note;
 import uasz.sn.Gestion_Enseignement.Classes.repository.NoteRepository;
+import uasz.sn.Gestion_Enseignement.Classes.service.EleveService;
+import uasz.sn.Gestion_Enseignement.Classes.service.MatiereService;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,10 +18,16 @@ public class NoteService {
     @Autowired
     private NoteRepository noteRepository;
 
+    @Autowired
+    private EleveService eleveService; // ✅ Ajout du service Eleve
+
+    @Autowired
+    private MatiereService matiereService; // ✅ Ajout du service Matiere
+
     // ✅ Trouver les notes d'un élève
     public List<Note> trouverNotesParEleve(Long eleveId) {
         return noteRepository.findByEleveId(eleveId);
-    } // ✅ Fermeture correcte de la méthode
+    }
 
     // ✅ Trouver une note par ID
     public Note trouverNoteParId(Long id) {
@@ -25,21 +35,28 @@ public class NoteService {
         return note.orElseThrow(() -> new RuntimeException("Note introuvable avec l'ID : " + id));
     }
 
-    // ✅ Enregistrer une note
+    // ✅ Enregistrer une note avec un objet Note
     public void enregistrerNote(Note note) {
         noteRepository.save(note);
     }
 
-    // ✅ Enregistrer une note avec les deux valeurs (Devoir et Composition)
-    public void enregistrerNote(Long eleveId, String matiere, double noteDevoir, double noteComposition) {
+    public void enregistrerNote(Long eleveId, Long matiereId, double noteDevoir, double noteComposition) {
+        Eleve eleve = eleveService.rechercherEleveParId(eleveId);
+        Matiere matiere = matiereService.getMatiereById(matiereId);
+
+        if (eleve == null || matiere == null) {
+            throw new RuntimeException("Élève ou Matière introuvable !");
+        }
+
         Note note = new Note();
-        note.setEleveId(eleveId);
-        note.setMatiere(matiere);
+        note.setEleve(eleve); // ✅ Correction ici
+        note.setMatiere(matiere); // ✅ Correction ici
         note.setNoteDevoir(noteDevoir);
         note.setNoteComposition(noteComposition);
 
         noteRepository.save(note);
     }
+
 
     // ✅ Supprimer une note
     public void supprimerNote(Long id) {

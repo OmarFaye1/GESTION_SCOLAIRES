@@ -1,12 +1,16 @@
 package uasz.sn.Gestion_Enseignement.Classes.repository;
 
+import org.springframework.stereotype.Repository;
 import uasz.sn.Gestion_Enseignement.Classes.modele.Matiere;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface MatiereRepository extends JpaRepository<Matiere, Long> {
-    // Trouver une matière par son code
-    Matiere findByCode(String code);
+import java.util.List;
+import java.util.Optional;
 
-    // Trouver une matière par son nom
-    Matiere findByNom(String nom);
+@Repository
+public interface MatiereRepository extends JpaRepository<Matiere, Long> {
+    List<Matiere> findByClasseId(Long classeId);
+
+    // ✅ Recherche d'une matière par son code
+    Optional<Matiere> findByCode(String code);
 }

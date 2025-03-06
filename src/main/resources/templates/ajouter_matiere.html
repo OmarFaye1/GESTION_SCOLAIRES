@@ -1,22 +1,32 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" th:href="@{/css/bootstrap.css}"/>
-    <title>Ajouter une Matière</title>
+    <title>Ajouter une matière</title>
 </head>
 <body>
 <div class="container">
-    <h1>Ajouter une Matière</h1>
-    <form th:action="@{/matieres/ajouter}" method="post">
+    <h1>Ajouter une matière</h1>
+    <form th:action="@{/chefDepartement/matiere/ajouter}" method="post">
         <div class="form-group">
-            <label for="nom">Nom :</label>
+            <label for="nom">Nom de la matière :</label>
             <input type="text" id="nom" name="nom" class="form-control" required>
         </div>
+
         <div class="form-group">
-            <label for="code">Code :</label>
+            <label for="code">Code de la matière :</label>
             <input type="text" id="code" name="code" class="form-control" required>
         </div>
+
+        <div class="form-group">
+            <label for="classeId">Classe :</label>
+            <select id="classeId" name="classeId" class="form-control" required>
+                <option th:each="classe : ${classes}" th:value="${classe.id}" th:text="${classe.libelle}"></option>
+            </select>
+        </div>
+
         <button type="submit" class="btn btn-success">Ajouter</button>
     </form>
 </div>

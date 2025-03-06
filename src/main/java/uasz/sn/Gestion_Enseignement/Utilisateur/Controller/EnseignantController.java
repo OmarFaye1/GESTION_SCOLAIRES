@@ -10,7 +10,9 @@ import uasz.sn.Gestion_Enseignement.Authentification.modele.Role;
 import uasz.sn.Gestion_Enseignement.Authentification.modele.Utilisateur;
 import uasz.sn.Gestion_Enseignement.Authentification.service.UtilisateurService;
 import uasz.sn.Gestion_Enseignement.Classes.modele.Eleve;
+import uasz.sn.Gestion_Enseignement.Classes.modele.Matiere;
 import uasz.sn.Gestion_Enseignement.Classes.service.EleveService; // ✅ Import du service EleveService
+import uasz.sn.Gestion_Enseignement.Classes.service.MatiereService;
 import uasz.sn.Gestion_Enseignement.Classes.service.NoteService;
 import uasz.sn.Gestion_Enseignement.Utilisateur.Modele.Enseignant;
 import uasz.sn.Gestion_Enseignement.Utilisateur.Service.EnseignantService;
@@ -31,6 +33,9 @@ public class EnseignantController {
 
     @Autowired
     private NoteService noteService;
+
+    @Autowired
+    private MatiereService matiereService;
 
 
     @Autowired
@@ -93,35 +98,56 @@ public class EnseignantController {
         return "redirect:/ChefDepartement/Enseignant";
     }
 
-    // ✅ Afficher la page de saisie des notes
     @GetMapping("enseignant/saisirNotes")
     public String saisirNotes(@RequestParam("id") Long eleveId, Model model) {
-        // Charger l'élève à partir de l'ID
         Eleve eleve = eleveService.rechercherEleveParId(eleveId);
+        List<Matiere> matieres = matiereService.getAllMatieres(); // Récupérer les matières
         model.addAttribute("eleve", eleve);
-
+        model.addAttribute("matieres", matieres); // Ajouter les matières au modèle
         return "saisir_notes";
     }
 
-    // ✅ Enregistrer les deux notes (Devoir et Composition)
-    @PostMapping("enseignant/enregistrerNotes")
+
+    @PostMapping("/enseignant/enregistrerNotes")
     public String enregistrerNotes(@RequestParam("eleveId") Long eleveId,
-                                   @RequestParam("matiere") String matiere,
+                                   @RequestParam("matiereId") Long matiereId,
                                    @RequestParam("noteDevoir") double noteDevoir,
                                    @RequestParam("noteComposition") double noteComposition,
                                    Model model) {
-        // Enregistrer la note dans la base de données
-        noteService.enregistrerNote(eleveId, matiere, noteDevoir, noteComposition);
+        noteService.enregistrerNote(eleveId, matiereId, noteDevoir, noteComposition);
 
-        // Récupérer l'élève pour afficher ses informations
         Eleve eleve = eleveService.rechercherEleveParId(eleveId);
+        Matiere matiere = matiereService.getMatiereById(matiereId);
 
-        // Ajouter les données au modèle
         model.addAttribute("eleve", eleve);
         model.addAttribute("matiere", matiere);
         model.addAttribute("noteDevoir", noteDevoir);
         model.addAttribute("noteComposition", noteComposition);
 
-        return "confirmation_note"; // Redirige vers la page de confirmation
+        return "confirmation_note";
     }
+    @PostMapping("/enseignant/verifierCodeMatiere")
+    public String verifierCodeMatiere(@RequestParam("eleveId") Long eleveId,
+                                      @RequestParam("matiereId") Long matiereId,
+                                      @RequestParam("codeMatiere") String codeMatiere,
+                                      Model model) {
+
+        Matiere matiere = matiereService.getMatiereById(matiereId);
+
+        if (matiere != null && matiere.getCode().equals(codeMatiere)) {
+            model.addAttribute("eleve", eleveService.rechercherEleveParId(eleveId));
+            model.addAttribute("matiere", matiere);
+            return "saisir_notes_form"; // Redirige vers la page de saisie des notes
+        } else {
+            model.addAttribute("errorMessage", "Le code de la matière est incorrect. Veuillez donner le bon code.");
+            model.addAttribute("eleve", eleveService.rechercherEleveParId(eleveId));
+            model.addAttribute("matieres", matiereService.getAllMatieres());
+            return "saisir_notes"; // Revient à la sélection de la matière avec le message d'erreur
+        }
+    }
+
+
+
+
+
 }

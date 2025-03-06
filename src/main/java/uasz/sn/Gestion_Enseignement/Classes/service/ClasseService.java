@@ -16,6 +16,11 @@ public class ClasseService {
     @Autowired
     private ClasseRepository classeRepository;
 
+    // Implémenter la méthode getAllClasses
+    public List<Classe> getAllClasses() {
+        return classeRepository.findAll(); // Utiliser le repository pour récupérer toutes les classes
+    }
+
     public void ajouterClasse(Classe classe) {
         classeRepository.save(classe);
     }

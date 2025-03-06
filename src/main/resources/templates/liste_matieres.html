@@ -1,20 +1,55 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" th:href="@{/css/bootstrap.css}"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Liste des Matières</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}"/>
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            margin-top: 30px;
+            max-width: 900px;
+        }
+        h1 {
+            color: #007bff;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        table {
+            background: white;
+        }
+        th, td {
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
+
 <div class="container">
     <h1>Liste des Matières</h1>
-    <a th:href="@{/matieres/ajouter}" class="btn btn-success">Ajouter une matière</a>
-    <table class="table">
-        <thead>
+
+    <!-- Sélection de la classe -->
+    <form th:action="@{/chefDepartement/matiere/liste}" method="get" class="mb-3">
+        <label for="classeId">Sélectionnez une classe :</label>
+        <select name="classeId" id="classeId" class="form-control" required>
+            <option value="">-- Choisir une classe --</option>
+            <option th:each="classe : ${classes}" th:value="${classe.id}" th:text="${classe.libelle}"></option>
+        </select>
+        <button type="submit" class="btn btn-primary mt-2">Filtrer</button>
+    </form>
+
+    <!-- Table des matières -->
+    <table class="table table-bordered">
+        <thead class="table-dark">
         <tr>
             <th>ID</th>
             <th>Nom</th>
             <th>Code</th>
+            <th>Classe</th>
             <th>Actions</th>
         </tr>
         </thead>
@@ -23,13 +58,18 @@
             <td th:text="${matiere.id}"></td>
             <td th:text="${matiere.nom}"></td>
             <td th:text="${matiere.code}"></td>
+            <td th:text="${matiere.classe.libelle}"></td>
             <td>
-                <a th:href="@{/matieres/modifier/{id}(id=${matiere.id})}" class="btn btn-primary">Modifier</a>
-                <a th:href="@{/matieres/supprimer/{id}(id=${matiere.id})}" class="btn btn-danger">Supprimer</a>
+                <a th:href="@{/chefDepartement/matiere/modifier(id=${matiere.id})}" class="btn btn-warning btn-sm">Modifier</a>
+                <a th:href="@{/chefDepartement/matiere/supprimer(id=${matiere.id})}" class="btn btn-danger btn-sm" onclick="return confirm('Voulez-vous supprimer cette matière ?')">Supprimer</a>
             </td>
         </tr>
         </tbody>
     </table>
+
+    <!-- Bouton Ajouter une matière -->
+    <a th:href="@{/chefDepartement/matiere/ajouter}" class="btn btn-success">Ajouter une Matière</a>
 </div>
+
 </body>
 </html>

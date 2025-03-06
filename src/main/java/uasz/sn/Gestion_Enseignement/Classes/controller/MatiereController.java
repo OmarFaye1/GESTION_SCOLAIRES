@@ -4,60 +4,44 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import uasz.sn.Gestion_Enseignement.Classes.modele.Classe;
 import uasz.sn.Gestion_Enseignement.Classes.modele.Matiere;
+import uasz.sn.Gestion_Enseignement.Classes.service.ClasseService;
 import uasz.sn.Gestion_Enseignement.Classes.service.MatiereService;
 
 import java.util.List;
 
 @Controller
-@RequestMapping("/matieres")
+@RequestMapping("/chefDepartement/matiere")
 public class MatiereController {
 
     @Autowired
     private MatiereService matiereService;
 
-    // Afficher la liste des matières
-    @GetMapping
-    public String listerMatieres(Model model) {
-        List<Matiere> matieres = matiereService.listerToutesMatieres();
-        model.addAttribute("matieres", matieres);
-        return "liste_matieres";
-    }
+    @Autowired
+    private ClasseService classeService;
 
-    // Afficher le formulaire d'ajout d'une matière
     @GetMapping("/ajouter")
-    public String afficherFormulaireAjout(Model model) {
+    public String afficherFormulaireAjoutMatiere(Model model) {
         model.addAttribute("matiere", new Matiere());
+        model.addAttribute("classes", classeService.getAllClasses()); // Utiliser la méthode implémentée
         return "ajouter_matiere";
     }
 
-    // Ajouter une matière
     @PostMapping("/ajouter")
-    public String ajouterMatiere(@ModelAttribute Matiere matiere) {
+    public String ajouterMatiere(@ModelAttribute Matiere matiere, @RequestParam("classeId") Long classeId) {
+        Classe classe = classeService.afficherClasse(classeId);
+        matiere.setClasse(classe);
         matiereService.ajouterMatiere(matiere);
-        return "redirect:/matieres";
+        return "redirect:/chefDepartement/matiere/liste";
     }
 
-    // Afficher le formulaire de modification d'une matière
-    @GetMapping("/modifier/{id}")
-    public String afficherFormulaireModification(@PathVariable Long id, Model model) {
-        Matiere matiere = matiereService.trouverMatiereParId(id);
-        model.addAttribute("matiere", matiere);
-        return "modifier_matiere";
+
+    @GetMapping("/liste")
+    public String afficherListeMatieres(Model model) {
+        model.addAttribute("matieres", matiereService.getAllMatieres());
+        return "liste_matieres"; // Assurez-vous que ce fichier existe
     }
 
-    // Modifier une matière
-    @PostMapping("/modifier/{id}")
-    public String modifierMatiere(@PathVariable Long id, @ModelAttribute Matiere matiere) {
-        matiere.setId(id);
-        matiereService.modifierMatiere(matiere);
-        return "redirect:/matieres";
-    }
 
-    // Supprimer une matière
-    @GetMapping("/supprimer/{id}")
-    public String supprimerMatiere(@PathVariable Long id) {
-        matiereService.supprimerMatiere(id);
-        return "redirect:/matieres";
-    }
 }

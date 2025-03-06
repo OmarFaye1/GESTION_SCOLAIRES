@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+
 
 @Service
 public class MatiereService {
@@ -13,38 +15,31 @@ public class MatiereService {
     @Autowired
     private MatiereRepository matiereRepository;
 
-    // Ajouter une matière
-    public Matiere ajouterMatiere(Matiere matiere) {
-        return matiereRepository.save(matiere);
+    public List<Matiere> getMatieresByClasse(Long classeId) {
+        return matiereRepository.findByClasseId(classeId);
     }
 
-    // Modifier une matière
-    public Matiere modifierMatiere(Matiere matiere) {
-        return matiereRepository.save(matiere);
-    }
 
-    // Supprimer une matière
-    public void supprimerMatiere(Long id) {
-        matiereRepository.deleteById(id);
-    }
 
-    // Lister toutes les matières
-    public List<Matiere> listerToutesMatieres() {
+    // ✅ Récupérer toutes les matières
+    public List<Matiere> getAllMatieres() {
         return matiereRepository.findAll();
     }
 
-    // Trouver une matière par son ID
-    public Matiere trouverMatiereParId(Long id) {
-        return matiereRepository.findById(id).orElse(null);
+
+    public void ajouterMatiere(Matiere matiere) {
+        matiereRepository.save(matiere);
     }
 
-    // Trouver une matière par son code
-    public Matiere trouverMatiereParCode(String code) {
-        return matiereRepository.findByCode(code);
+    // ✅ Méthode pour récupérer une matière par ID
+    public Matiere getMatiereById(Long id) {
+        Optional<Matiere> matiere = matiereRepository.findById(id);
+        return matiere.orElseThrow(() -> new RuntimeException("Matière introuvable avec l'ID : " + id));
     }
 
-    // Trouver une matière par son nom
-    public Matiere trouverMatiereParNom(String nom) {
-        return matiereRepository.findByNom(nom);
+    // ✅ Méthode pour récupérer une matière par son code
+    public Matiere getMatiereByCode(String codeMatiere) {
+        return matiereRepository.findByCode(codeMatiere)
+                .orElseThrow(() -> new RuntimeException("Matière introuvable avec le code : " + codeMatiere));
     }
 }
