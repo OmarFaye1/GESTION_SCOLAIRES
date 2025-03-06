@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import uasz.sn.Gestion_Enseignement.Authentification.modele.Utilisateur;
 
 import java.util.Date;
 
@@ -12,33 +13,16 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Eleve {
+public class Eleve extends Utilisateur { // Héritage de Utilisateur
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    private String nom;
-    private String prenom;
-    private String adresse;
     private String code;
-
-    @Column(unique = true, nullable = true)  // Assure que l'email est unique
-    private String username;
-
-    private String password;
+    private String adresse;
 
     @Temporal(TemporalType.DATE)
-    @DateTimeFormat(pattern = "yyyy-MM-dd") // Assure un bon format pour les formulaires Thymeleaf
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date date_naissance;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date dateCreation;
-
     @ManyToOne
-    @JoinColumn(name = "classe_id") // Crée une clé étrangère pour lier l'élève à sa classe
+    @JoinColumn(name = "classe_id")
     private Classe classe;
-
-
-
 }

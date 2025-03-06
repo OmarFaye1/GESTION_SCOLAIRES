@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accueil Élève</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        /* Général */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        /* Header */
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Positionnement du menu à droite */
+        .nav-container {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .nav-container ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-container ul li {
+            margin-left: 20px;
+        }
+
+        .nav-container ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .nav-container ul li a:hover {
+            text-decoration: underline;
+        }
+
+        /* Section principale */
+        section {
+            padding: 20px;
+            background-color: white;
+            margin: 20px auto;
+            width: 80%;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        section h2 {
+            color: #4CAF50;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Bienvenue</h1>
+    <div class="nav-container">
+        <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    <span th:text="${prenom+'. '+nom}"></span><span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a th:href="@{/profil}"><span>Profil</span></a>
+                    </li>
+                    <li><a th:href="@{/logout}"><span>Déconnexion</span></a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</header>
+
+
+
+<footer>
+    <p>© 2025 Gestion Enseignement - Tous droits réservés</p>
+</footer>
+</body>
+</html>

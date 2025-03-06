@@ -97,7 +97,6 @@ public class EnseignantController {
         enseignantService.archiver(id);
         return "redirect:/ChefDepartement/Enseignant";
     }
-
     @GetMapping("enseignant/saisirNotes")
     public String saisirNotes(@RequestParam("id") Long eleveId, Model model) {
         Eleve eleve = eleveService.rechercherEleveParId(eleveId);
@@ -144,6 +143,15 @@ public class EnseignantController {
             model.addAttribute("matieres", matiereService.getAllMatieres());
             return "saisir_notes"; // Revient à la sélection de la matière avec le message d'erreur
         }
+
+
+    }
+    @RequestMapping(value = "/Eleve/Accueil", method = RequestMethod.GET)
+    public String accueil_Eleve(Model model, Principal principal) {
+        Utilisateur utilisateur = utilisateurService.rechercher_Utilisateur(principal.getName());
+        model.addAttribute("nom", utilisateur.getNom());
+        model.addAttribute("prenom", utilisateur.getPrenom().charAt(0));
+        return "template_Eleve";
     }
 
 

@@ -28,12 +28,11 @@ public class UtilisateurController {
         Utilisateur utilisateur = utilisateurService.rechercher_Utilisateur(principal.getName());
         if (utilisateur.getRoles().get(0).getRole().equals("Enseignant")){
             url = "redirect:/Enseignant/Accueil ";
-        } else if (utilisateur.getRoles().get(0).getRole().equals("Vacataire")) {
-            url = "redirect:/Vacataire/Accueil ";
+
         } else if (utilisateur.getRoles().get(0).getRole().equals("ChefDepartement")) {
             url = "redirect:/ChefDepartement/Accueil ";
-        } else if (utilisateur.getRoles().get(0).getRole().equals("Etudiant")) {
-            url = "redirect:/Etudiant/Accueil ";
+        } else if (utilisateur.getRoles().get(0).getRole().equals("Eleve")) {
+            url = "redirect:/Eleve/Accueil ";
         }else if (utilisateur.getRoles().get(0).getRole().equals("ResponsableClasse")) {
             url = "redirect:/ResponsableClasse/Accueil ";
         }
