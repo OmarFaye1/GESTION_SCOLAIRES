@@ -5,12 +5,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import uasz.sn.Gestion_Enseignement.Authentification.modele.Role;
 import uasz.sn.Gestion_Enseignement.Authentification.modele.Utilisateur;
 import uasz.sn.Gestion_Enseignement.Authentification.service.UtilisateurService;
+import uasz.sn.Gestion_Enseignement.Classes.modele.Classe;
 import uasz.sn.Gestion_Enseignement.Classes.modele.Eleve;
+import uasz.sn.Gestion_Enseignement.Classes.service.ClasseService; // ✅ Ajout du service manquant
 import uasz.sn.Gestion_Enseignement.Classes.service.EleveService;
 
 import java.security.Principal;
+import java.util.ArrayList;
 
 @Controller
 @RequestMapping("/eleve")
@@ -18,15 +22,18 @@ public class EleveController {
 
     @Autowired
     private UtilisateurService utilisateurService;
+
     @Autowired
     private EleveService eleveService;
 
     @Autowired
+    private ClasseService classeService; // ✅ Ajout de la déclaration et injection
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // ✅ Ajouter un élève
     @PostMapping("/ajouter")
-    public String ajouterEleve(@ModelAttribute Eleve eleve) {
+    public String ajouterEleve(@ModelAttribute Eleve eleve, @RequestParam("classeId") Long classeId) {
         if (eleve.getUsername() == null || eleve.getUsername().trim().isEmpty()) {
             throw new IllegalArgumentException("Le champ username ne peut pas être vide.");
         }
@@ -37,9 +44,25 @@ public class EleveController {
         // ✅ Hasher le mot de passe avant insertion
         eleve.setPassword(passwordEncoder.encode(eleve.getPassword()));
 
+        // ✅ Assigner la classe à l'élève
+        Classe classe = classeService.afficherClasse(classeId);
+        eleve.setClasse(classe);
+
+        // ✅ Vérifier si la liste des rôles est null et l'initialiser
+        if (eleve.getRoles() == null) {
+            eleve.setRoles(new ArrayList<>()); // Initialisation de la liste
+        }
+
+        // ✅ Ajouter le rôle "Eleve"
+        Role roleEleve = utilisateurService.ajouter_Role(new Role("Eleve"));
+        eleve.getRoles().add(roleEleve); // Maintenant, la liste n'est plus null
+
+        // ✅ Sauvegarder l'élève
         eleveService.ajouterEleve(eleve);
+
         return "redirect:/details_classe?id=" + eleve.getClasse().getId();
     }
+
 
     // ✅ Modifier un élève
     @PostMapping("/modifier")
