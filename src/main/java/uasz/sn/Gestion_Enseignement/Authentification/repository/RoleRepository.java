@@ -5,7 +5,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import uasz.sn.Gestion_Enseignement.Authentification.modele.Role;
 
+import java.util.Optional;
+
 public interface RoleRepository extends JpaRepository<Role, String>  {
     @Query("SELECT r FROM Role r WHERE r.role = :role")
     Role findRoleByRole (@Param("role") String Role);
+
+
 }

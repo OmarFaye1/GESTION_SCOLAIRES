@@ -26,6 +26,7 @@ public class UtilisateurService {
         return role;
     }
 
+
     public  void ajouter_UtilisateurRoles(Utilisateur utilisateur, Role role){
         Utilisateur user = utilisateurRepository.findUtilisateurByUsername(utilisateur.getUsername());
         Role profil = roleRepository.findRoleByRole(role.getRole());

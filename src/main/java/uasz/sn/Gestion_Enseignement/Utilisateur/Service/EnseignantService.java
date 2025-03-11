@@ -18,12 +18,21 @@ public class EnseignantService {
     private EnseignantRepository enseignantRepository;
 
     public Enseignant ajouter(Enseignant enseignant) {
+        // Vérifier si l'enseignant existe déjà
         Optional<Enseignant> optionalEnseignant = enseignantRepository.findByMatricule(enseignant.getMatricule());
         if (optionalEnseignant.isPresent()) {
             throw new ResourceAlreadyExistException("Le matricule " + enseignant.getMatricule() + " existe déjà");
         }
+
+        // Si archive n'est pas initialisé, définir une valeur par défaut
+        if (enseignant.getArchive() == null) {
+            enseignant.setArchive(false); // Définir par défaut sur false
+        }
+
+        // Enregistrer l'enseignant dans la base de données
         return enseignantRepository.save(enseignant);
     }
+
 
     public List<Enseignant> liste() {
         return enseignantRepository.findAll();
@@ -50,9 +59,9 @@ public class EnseignantService {
         enseignantRepository.save(enseignant);
     }
 
-    public Enseignant rechercherParEmail(String email) {
-        return enseignantRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("Enseignant avec email " + email + " n'existe pas"));
+    public Enseignant rechercherParUsername(String username) {
+        return enseignantRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("Enseignant avec email " + username + " n'existe pas"));
     }
 
     public void supprimer(Long id) {

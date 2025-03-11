@@ -64,17 +64,40 @@ public class EnseignantController {
     }
 
     @RequestMapping(value = "/ChefDepartement/ajouterEnseignant", method = RequestMethod.POST)
-    public String ajouter_Enseignant(Enseignant enseignant) {
-        String password = passwordEncoder().encode("Passer123");
-        enseignant.setPassword(password);
+    public String ajouter_Enseignant(@ModelAttribute Enseignant enseignant,
+                                     @RequestParam String username,
+                                     @RequestParam String motDePasse) {
+        // Vérifiez ici si l'email n'est pas nul et qu'il est bien défini
+        if (username == null || username.isEmpty()) {
+            return "redirect:/errorPage"; // Redirigez vers une page d'erreur si l'email est manquant
+        }
+
+        // Log de l'email reçu
+        System.out.println("Username: " + username);
+
+        enseignant.setEmail( username);  // Assurez-vous que l'email est bien défini
+
+        // Encodage du mot de passe
+        String encodedPassword = passwordEncoder().encode(motDePasse);
+        enseignant.setPassword(encodedPassword);
         enseignant.setDateCreation(new Date());
+
+        // Ajout du rôle
         Role role = utilisateurService.ajouter_Role(new Role("Enseignant"));
         List<Role> roles = new ArrayList<>();
         roles.add(role);
         enseignant.setRoles(roles);
+
+        // Log des valeurs de l'objet Enseignant avant l'ajout
+        System.out.println("Enseignant: " + enseignant);
+
+        // Ajouter l'enseignant à la base de données
         enseignantService.ajouter(enseignant);
         return "redirect:/ChefDepartement/Enseignant";
     }
+
+
+
 
     @RequestMapping(value = "/ChefDepartement/modifierEnseignant", method = RequestMethod.POST)
     public String modifier_Enseignant(Enseignant enseignant) {
