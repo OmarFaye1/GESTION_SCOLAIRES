@@ -17,6 +17,7 @@ public class Eleve extends Utilisateur { // Héritage de Utilisateur
 
     private String code;
     private String adresse;
+    private String password_clair;
 
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -25,4 +26,5 @@ public class Eleve extends Utilisateur { // Héritage de Utilisateur
     @ManyToOne
     @JoinColumn(name = "classe_id")
     private Classe classe;
+
 }

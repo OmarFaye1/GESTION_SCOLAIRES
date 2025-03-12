@@ -71,6 +71,7 @@ public class EleveController {
         return "redirect:/details_classe?id=" + eleve.getClasse().getId();
     }
 
+
     // ✅ Supprimer un élève
     @PostMapping("/supprimer")
     public String supprimerEleve(@RequestParam("id") Long eleveId, @RequestParam("classeId") Long classeId) {

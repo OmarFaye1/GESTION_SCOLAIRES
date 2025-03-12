@@ -56,4 +56,6 @@ public class EleveService {
     public List<Eleve> afficherElevesParClasse(Classe classe) {
         return eleveRepository.findByClasse(classe);
     }
+
+
 }

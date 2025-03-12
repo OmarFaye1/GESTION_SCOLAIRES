@@ -83,6 +83,8 @@ public class GestionEnseignementApplication implements CommandLineRunner {
 		eleve.setPassword(password);
 		eleve.setCode(code);
 		eleve.setDateCreation(new Date());
-		return eleve;*/
-	}
+		return eleve;
+	}*/
 }
+}
+

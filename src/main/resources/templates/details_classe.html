@@ -16,7 +16,6 @@
 </head>
 <body>
 <div class="container">
-
     <div class="row" style="padding-bottom: 10px; padding-top: 10px">
         <div style="text-align: center">
             <h3>La liste des élèves de la classe : <span th:text="${classe.code}"></span> <span th:text="${classe.libelle}"></span></h3>
@@ -25,7 +24,8 @@
     </div>
 
     <!-- ✅ Début popup ajouter un Élève -->
-    <div class="modal fade" id="form_Ajouter_Eleve" tabindex="-1" role="dialog" aria-labelledby="formAjouterEleveTitle" aria-hidden="true">
+    <!-- ✅ Début popup ajouter un Élève -->
+    <div class="modal fade" id="form_Ajouter_Eleve" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content panel-success">
                 <div class="modal-header panel-heading">
@@ -38,11 +38,11 @@
 
                     <div class="form-group">
                         <label>Nom</label>
-                        <input type="text" class="form-control" name="nom" required/>
+                        <input type="text" class="form-control" name="nom" id="nom" required/>
                     </div>
                     <div class="form-group">
                         <label>Prénom</label>
-                        <input type="text" class="form-control" name="prenom" required/>
+                        <input type="text" class="form-control" name="prenom" id="prenom" required/>
                     </div>
                     <div class="form-group">
                         <label>Adresse</label>
@@ -54,11 +54,22 @@
                     </div>
                     <div class="form-group">
                         <label>Email (Identifiant)</label>
-                        <input type="email" class="form-control" name="username" required/>
+                        <input type="email" class="form-control" name="username" id="username" required readonly/>
                     </div>
                     <div class="form-group">
                         <label>Mot de passe</label>
-                        <input type="password" class="form-control" name="password" required/>
+                        <div class="input-group">
+                            <input type="password" class="form-control" name="password" id="password" required readonly/>
+                            <div class="input-group-append">
+                                <button class="btn btn-secondary" type="button" id="togglePassword"><i class="fa fa-eye"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ✅ Champ supplémentaire pour récupérer et afficher le mot de passe en clair -->
+                    <div class="form-group">
+                        <label>Mot de passe en clair (pour affichage uniquement)</label>
+                        <input type="text" class="form-control" id="password_clair" name="password_clair" required readonly/>
                     </div>
 
                     <button type="submit" class="btn btn-success">Enregistrer</button>
@@ -68,6 +79,52 @@
     </div>
     <!-- ✅ Fin popup ajouter un Élève -->
 
+    <!-- ✅ Fin popup ajouter un Élève -->
+
+    <script>
+     $(document).ready(function() {
+            $("#table_Eleve").DataTable();
+        });
+       function generateUsername() {
+    let prenom = document.getElementById("prenom").value.trim();
+    let nom = document.getElementById("nom").value.trim();
+    if (prenom && nom) {
+        document.getElementById("username").value = prenom.charAt(0).toLowerCase() + nom.toLowerCase() + "@gmail.com";
+    }
+}
+
+function generatePassword() {
+    // Génération d'un mot de passe aléatoire
+    let password = Math.random().toString(36).substring(2, 6).toUpperCase();
+
+    // Mettre à jour les deux champs : le mot de passe crypté et en clair
+    document.getElementById("password").value = password;
+    document.getElementById("password_clair").value = password;  // Affichage du mot de passe en clair
+}
+
+// Ajout des écouteurs d'événements pour générer le nom d'utilisateur et le mot de passe
+document.getElementById("prenom").addEventListener("input", generateUsername);
+document.getElementById("nom").addEventListener("input", generateUsername);
+document.getElementById("prenom").addEventListener("blur", generatePassword);
+document.getElementById("nom").addEventListener("blur", generatePassword);
+
+// Gestion du bouton pour afficher/masquer le mot de passe
+document.getElementById("togglePassword").addEventListener("click", function() {
+    let passwordInput = document.getElementById("password");
+    let passwordClairInput = document.getElementById("password_clair");
+
+    if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        passwordClairInput.type = "text"; // Afficher le mot de passe en clair
+    } else {
+        passwordInput.type = "password";
+        passwordClairInput.type = "password"; // Masquer le mot de passe en clair
+    }
+});
+
+    </script>
+<!-- ✅ Fin popup ajouter un Élève -->
+
     <div class="table-responsive">
         <table class="table table-bordered table-striped" id="table_Eleve">
             <thead>
@@ -76,6 +133,7 @@
                 <th>Prénom</th>
                 <th>Email</th>
                 <th>Adresse</th>
+                <th>Mot de passe</th>
                 <th>Actions</th>
             </tr>
             </thead>
@@ -85,6 +143,7 @@
                 <td th:text="${eleve.prenom}"></td>
                 <td th:text="${eleve.username}"></td>
                 <td th:text="${eleve.adresse}"></td>
+                <td th:text="${eleve.password_clair}"></td>
                 <td>
                     <button class="btn btn-info btn-sm" data-toggle="modal" th:attr="data-target='#form_Modifier_Eleve' + ${eleve.id}">Modifier</button>
                     <button class="btn btn-danger btn-sm" data-toggle="modal" th:attr="data-target='#form_Supprimer_Eleve' + ${eleve.id}">Supprimer</button>
@@ -93,12 +152,6 @@
             </tbody>
         </table>
     </div>
-
-    <script>
-        $(document).ready(function() {
-            $("#table_Eleve").DataTable();
-        });
-    </script>
 
     <!-- ✅ Début popup modifier un Élève -->
     <div th:each="eleve : ${listeDesEleve}" class="modal fade" th:attr="id='form_Modifier_Eleve' + ${eleve.id}" tabindex="-1" role="dialog" aria-hidden="true">
@@ -124,7 +177,16 @@
                         <label>Adresse</label>
                         <input type="text" class="form-control" name="adresse" th:value="${eleve.adresse}" required/>
                     </div>
+                    <div class="form-group">
+                        <label>Date de Naissance</label>
+                        <input type="text" class="form-control" name="date_naissance" th:value="${eleve.date_naissance}" required/>
+                    </div>
 
+                    <!-- ✅ Ajout du champ Email pour la modification -->
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" class="form-control" name="username" th:value="${eleve.username}" required/>
+                    </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-info">Enregistrer</button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
