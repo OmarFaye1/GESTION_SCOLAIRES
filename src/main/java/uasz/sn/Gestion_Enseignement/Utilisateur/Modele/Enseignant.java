@@ -15,6 +15,7 @@ public class Enseignant extends Enseignants {
 
     private String matricule;
     private String email;
+    private String password_clair;
     private boolean active = true; // Par défaut, un enseignant est actif
 
     @Column(name = "archive", nullable = false)

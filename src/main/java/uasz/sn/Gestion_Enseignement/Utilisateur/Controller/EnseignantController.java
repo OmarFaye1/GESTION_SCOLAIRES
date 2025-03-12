@@ -6,6 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import uasz.sn.Gestion_Enseignement.Authentification.modele.Role;
 import uasz.sn.Gestion_Enseignement.Authentification.modele.Utilisateur;
 import uasz.sn.Gestion_Enseignement.Authentification.service.UtilisateurService;
@@ -95,7 +96,16 @@ public class EnseignantController {
         enseignantService.ajouter(enseignant);
         return "redirect:/ChefDepartement/Enseignant";
     }
-
+    @PostMapping("/supprimer")
+    public String supprimerEnseignant(@RequestParam("id") Long id, RedirectAttributes redirectAttributes) {
+        try {
+            enseignantService.supprimer(id);
+            redirectAttributes.addFlashAttribute("success", "Enseignant supprimé avec succès !");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Erreur lors de la suppression !");
+        }
+        return "redirect:/chefDepartement/enseignants"; // Redirige vers la liste des enseignants
+    }
 
 
 

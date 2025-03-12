@@ -20,35 +20,45 @@
         </button>
     </div>
 
-    <!-- Début popup Ajouter un Enseignant -->
-    <div class="modal fade" id="form_Ajouter_Enseignant">
+    <!-- ✅ Début popup Ajouter un Enseignant -->
+    <div class="modal fade" id="form_Ajouter_Enseignant" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Ajouter un Enseignant</h4>
+            <div class="modal-content panel-success">
+                <div class="modal-header panel-heading">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Ajouter un Enseignant</h4>
                 </div>
                 <form th:action="@{/ChefDepartement/ajouterEnseignant}" method="post">
                     <div class="modal-body">
                         <div class="form-group">
                             <label>Matricule</label>
-                            <input type="text" class="form-control" name="matricule" required/>
+                            <input type="text" class="form-control" name="matricule" id="matricule" required/>
                         </div>
                         <div class="form-group">
                             <label>Nom</label>
-                            <input type="text" class="form-control" name="nom" required/>
+                            <input type="text" class="form-control" name="nom" id="nom" required/>
                         </div>
                         <div class="form-group">
                             <label>Prénom(s)</label>
-                            <input type="text" class="form-control" name="prenom" required/>
+                            <input type="text" class="form-control" name="prenom" id="prenom" required/>
                         </div>
                         <div class="form-group">
-                            <label>Username</label>
-                            <input type="string" class="form-control" name="username" required/>
+                            <label>Email (Identifiant)</label>
+                            <input type="email" class="form-control" name="username" id="username" required readonly/>
                         </div>
                         <div class="form-group">
                             <label>Mot de passe</label>
-                            <input type="password" class="form-control" name="motDePasse" required/>
+                            <div class="input-group">
+                                <input type="password" class="form-control" name="motDePasse" id="password" required readonly/>
+                                <div class="input-group-append">
+                                    <button class="btn btn-secondary" type="button" id="togglePassword"><i class="fa fa-eye"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- ✅ Champ supplémentaire pour afficher le mot de passe en clair -->
+                        <div class="form-group">
+                            <label>Mot de passe en clair (pour affichage uniquement)</label>
+                            <input type="text" class="form-control" id="password_clair" name="password_clair" required readonly/>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -59,7 +69,63 @@
             </div>
         </div>
     </div>
-    <!-- Fin popup Ajouter un Enseignant -->
+    <!-- ✅ Fin popup Ajouter un Enseignant -->
+    <!-- ✅ Début popup supprimer un Enseignant -->
+    <div th:each="eleve : ${listeDesEnseignant}" class="modal fade" th:attr="id='form_Supprimer_Enseignant' + ${enseignant.id}" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content panel-danger">
+                <div class="modal-header panel-heading">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Supprimer Enseignant</h4>
+                </div>
+                <form th:action="@{/eleve/supprimer}" method="post">
+                    <input type="hidden" name="id" th:value="${eleve.id}" />
+                    <input type="hidden" name="classeId" th:value="${classe.id}" />
+                    <p>Êtes-vous sûr de vouloir supprimer cet enseignant ?</p>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-danger">Supprimer</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- ✅ Fin popup supprimer un Enseignant -->
+    <script>
+function generateUsername() {
+    let prenom = document.getElementById("prenom").value.trim();
+    let nom = document.getElementById("nom").value.trim();
+    if (prenom && nom) {
+        document.getElementById("username").value = prenom.charAt(0).toLowerCase() + nom.toLowerCase() + "@gmail.com";
+    }
+}
+
+function generatePassword() {
+    let password = Math.random().toString(36).substring(2, 6).toUpperCase();
+    document.getElementById("password").value = password;
+    document.getElementById("password_clair").value = password;
+}
+
+document.getElementById("prenom").addEventListener("input", generateUsername);
+document.getElementById("nom").addEventListener("input", generateUsername);
+document.getElementById("prenom").addEventListener("blur", generatePassword);
+document.getElementById("nom").addEventListener("blur", generatePassword);
+
+document.getElementById("togglePassword").addEventListener("click", function() {
+    let passwordInput = document.getElementById("password");
+    let passwordClairInput = document.getElementById("password_clair");
+
+    if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        passwordClairInput.type = "text";
+    } else {
+        passwordInput.type = "password";
+        passwordClairInput.type = "password";
+    }
+});
+</script>
+
 
     <div class="table-responsive">
         <table class="table table-bordered table-striped" id="table_Enseignant">
@@ -69,6 +135,7 @@
                 <th>Nom</th>
                 <th>Prénom(s)</th>
                 <th>Username</th>
+                <th>Mot de passe</th>
                 <th>Actions</th>
             </tr>
             </thead>
@@ -78,9 +145,13 @@
                 <td th:text="${enseignant.nom}"></td>
                 <td th:text="${enseignant.prenom}"></td>
                 <td th:text="${enseignant.username}"></td>
+                <td th:text="${enseignant.password_clair}"></td>
                 <td>
                     <button class="btn btn-info btn-sm" data-toggle="modal" th:attr="data-target='#form_Modifier_Enseignant' + ${enseignant.id}">
                         <i class="fas fa-edit"></i> Modifier
+                    </button>
+                    <button class="btn btn-info btn-sm" data-toggle="modal" th:attr="data-target='#form_Supprimer_Enseignant' + ${enseignant.id}">
+                        <i class="fas fa-edit"></i> Supprimer
                     </button>
                     <button th:if="${!enseignant.active}" class="btn btn-success btn-sm">
                         <i class="fas fa-check"></i> Activer
@@ -94,17 +165,14 @@
                     <button th:if="${enseignant.archive}" class="btn btn-primary btn-sm">
                         <i class="fas fa-box-open"></i> Désarchiver
                     </button>
+
                 </td>
             </tr>
             </tbody>
         </table>
     </div>
 
-    <script>
-        $(document).ready(function() {
-            $('#table_Enseignant').DataTable();
-        });
-    </script>
+
 </div>
 </body>
 </html>
