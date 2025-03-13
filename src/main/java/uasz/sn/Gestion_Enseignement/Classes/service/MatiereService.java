@@ -37,9 +37,5 @@ public class MatiereService {
         return matiere.orElseThrow(() -> new RuntimeException("Matière introuvable avec l'ID : " + id));
     }
 
-    // ✅ Méthode pour récupérer une matière par son code
-    public Matiere getMatiereByCode(String codeMatiere) {
-        return matiereRepository.findByCode(codeMatiere)
-                .orElseThrow(() -> new RuntimeException("Matière introuvable avec le code : " + codeMatiere));
-    }
+
 }

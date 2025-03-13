@@ -158,27 +158,7 @@ public class EnseignantController {
 
         return "confirmation_note";
     }
-    @PostMapping("/enseignant/verifierCodeMatiere")
-    public String verifierCodeMatiere(@RequestParam("eleveId") Long eleveId,
-                                      @RequestParam("matiereId") Long matiereId,
-                                      @RequestParam("codeMatiere") String codeMatiere,
-                                      Model model) {
 
-        Matiere matiere = matiereService.getMatiereById(matiereId);
-
-        if (matiere != null && matiere.getCode().equals(codeMatiere)) {
-            model.addAttribute("eleve", eleveService.rechercherEleveParId(eleveId));
-            model.addAttribute("matiere", matiere);
-            return "saisir_notes_form"; // Redirige vers la page de saisie des notes
-        } else {
-            model.addAttribute("errorMessage", "Le code de la matière est incorrect. Veuillez donner le bon code.");
-            model.addAttribute("eleve", eleveService.rechercherEleveParId(eleveId));
-            model.addAttribute("matieres", matiereService.getAllMatieres());
-            return "saisir_notes"; // Revient à la sélection de la matière avec le message d'erreur
-        }
-
-
-    }
     @RequestMapping(value = "/Eleve/Accueil", method = RequestMethod.GET)
     public String accueil_Eleve(Model model, Principal principal) {
         Utilisateur utilisateur = utilisateurService.rechercher_Utilisateur(principal.getName());

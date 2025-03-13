@@ -13,6 +13,10 @@
         .container {
             margin-top: 30px;
             max-width: 900px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
         }
         h1 {
             color: #007bff;
@@ -20,10 +24,20 @@
             margin-bottom: 30px;
         }
         table {
+            width: 100%;
             background: white;
         }
         th, td {
             text-align: center;
+            vertical-align: middle;
+        }
+        .btn {
+            font-size: 14px;
+            padding: 5px 10px;
+        }
+        .table th {
+            background-color: #007bff;
+            color: white;
         }
     </style>
 </head>
@@ -34,7 +48,7 @@
 
     <!-- Sélection de la classe -->
     <form th:action="@{/chefDepartement/matiere/liste}" method="get" class="mb-3">
-        <label for="classeId">Sélectionnez une classe :</label>
+        <label for="classeId"><strong>Sélectionnez une classe :</strong></label>
         <select name="classeId" id="classeId" class="form-control" required>
             <option value="">-- Choisir une classe --</option>
             <option th:each="classe : ${classes}" th:value="${classe.id}" th:text="${classe.libelle}"></option>
@@ -48,7 +62,7 @@
         <tr>
             <th>ID</th>
             <th>Nom</th>
-            <th>Code</th>
+            <th>Enseignant</th> <!-- ✅ Ajout de la colonne Enseignant -->
             <th>Classe</th>
             <th>Actions</th>
         </tr>
@@ -57,7 +71,7 @@
         <tr th:each="matiere : ${matieres}">
             <td th:text="${matiere.id}"></td>
             <td th:text="${matiere.nom}"></td>
-            <td th:text="${matiere.code}"></td>
+            <td th:text="${matiere.enseignant.nom + ' ' + matiere.enseignant.prenom}"></td> <!-- ✅ Affichage de l'enseignant -->
             <td th:text="${matiere.classe.libelle}"></td>
             <td>
                 <a th:href="@{/chefDepartement/matiere/modifier(id=${matiere.id})}" class="btn btn-warning btn-sm">Modifier</a>
@@ -68,7 +82,9 @@
     </table>
 
     <!-- Bouton Ajouter une matière -->
-    <a th:href="@{/chefDepartement/matiere/ajouter}" class="btn btn-success">Ajouter une Matière</a>
+    <div class="text-center mt-4">
+        <a th:href="@{/chefDepartement/matiere/ajouter}" class="btn btn-success">Ajouter une Matière</a>
+    </div>
 </div>
 
 </body>
