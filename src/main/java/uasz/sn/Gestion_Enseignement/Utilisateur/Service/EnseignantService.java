@@ -24,15 +24,9 @@ public class EnseignantService {
             throw new ResourceAlreadyExistException("Le matricule " + enseignant.getMatricule() + " existe déjà");
         }
 
-        // Si archive n'est pas initialisé, définir une valeur par défaut
-        if (enseignant.getArchive() == null) {
-            enseignant.setArchive(false); // Définir par défaut sur false
-        }
-
         // Enregistrer l'enseignant dans la base de données
         return enseignantRepository.save(enseignant);
     }
-
 
     public List<Enseignant> liste() {
         return enseignantRepository.findAll();
@@ -47,16 +41,9 @@ public class EnseignantService {
         return enseignantRepository.save(enseignant);
     }
 
-    public void activer(Long id) {
+    public void supprimer(Long id) {
         Enseignant enseignant = rechercher(id);
-        enseignant.setActive(true);
-        enseignantRepository.save(enseignant);
-    }
-
-    public void archiver(Long id) {
-        Enseignant enseignant = rechercher(id);
-        enseignant.setArchive(true);
-        enseignantRepository.save(enseignant);
+        enseignantRepository.delete(enseignant);
     }
 
     public Enseignant rechercherParUsername(String username) {
@@ -64,33 +51,12 @@ public class EnseignantService {
                 .orElseThrow(() -> new ResourceNotFoundException("Enseignant avec email " + username + " n'existe pas"));
     }
 
-    public void supprimer(Long id) {
-        Enseignant enseignant = rechercher(id);
-        enseignantRepository.delete(enseignant);
-    }
-
     public Enseignant rechercherParMatricule(String matricule) {
         return enseignantRepository.findByMatricule(matricule)
                 .orElseThrow(() -> new ResourceNotFoundException("Enseignant avec matricule " + matricule + " n'existe pas"));
     }
 
-    public List<Enseignant> listerEnseignantsActifs() {
-        return enseignantRepository.findByActiveTrue();
-    }
-
     public List<Enseignant> listerEnseignantsArchives() {
         return enseignantRepository.findByArchiveTrue();
-    }
-
-    public void desactiver(Long id) {
-        Enseignant enseignant = rechercher(id);
-        enseignant.setActive(false);
-        enseignantRepository.save(enseignant);
-    }
-
-    public void desarchiver(Long id) {
-        Enseignant enseignant = rechercher(id);
-        enseignant.setArchive(false);
-        enseignantRepository.save(enseignant);
     }
 }

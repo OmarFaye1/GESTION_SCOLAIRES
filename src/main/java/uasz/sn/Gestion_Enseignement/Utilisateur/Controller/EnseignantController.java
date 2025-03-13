@@ -119,17 +119,6 @@ public class EnseignantController {
         return "redirect:/ChefDepartement/Enseignant";
     }
 
-    @RequestMapping(value = "/ChefDepartement/activerEnseignant", method = RequestMethod.POST)
-    public String activer_Enseignant(Long id) {
-        enseignantService.activer(id);
-        return "redirect:/ChefDepartement/Enseignant";
-    }
-
-    @RequestMapping(value = "/ChefDepartement/archiverEnseignant", method = RequestMethod.POST)
-    public String archiver_Enseignant(Long id) {
-        enseignantService.archiver(id);
-        return "redirect:/ChefDepartement/Enseignant";
-    }
     @GetMapping("enseignant/saisirNotes")
     public String saisirNotes(@RequestParam("id") Long eleveId, Model model) {
         Eleve eleve = eleveService.rechercherEleveParId(eleveId);

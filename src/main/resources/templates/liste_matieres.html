@@ -2,59 +2,20 @@
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Liste des Matières</title>
     <link rel="stylesheet" th:href="@{/css/bootstrap.css}"/>
-    <style>
-        body {
-            background-color: #f8f9fa;
-            font-family: Arial, sans-serif;
-        }
-        .container {
-            margin-top: 30px;
-            max-width: 900px;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            color: #007bff;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        table {
-            width: 100%;
-            background: white;
-        }
-        th, td {
-            text-align: center;
-            vertical-align: middle;
-        }
-        .btn {
-            font-size: 14px;
-            padding: 5px 10px;
-        }
-        .table th {
-            background-color: #007bff;
-            color: white;
-        }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/buttons.dataTables.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <link rel="stylesheet" th:href="@{/css/jquery.dataTables.min.css}"/>
+
+    <script th:src="@{/js/jquery-3.7.0.js}"></script>
+    <script th:src="@{/js/bootstrap.js}"></script>
+    <script th:src="@{/js/dataTables.buttons.min.js}"></script>
+    <script th:src="@{/js/jquery.dataTables.min.js}"></script>
 </head>
 <body>
 
 <div class="container">
-    <h1>Liste des Matières</h1>
-
-    <!-- Sélection de la classe -->
-    <form th:action="@{/chefDepartement/matiere/liste}" method="get" class="mb-3">
-        <label for="classeId"><strong>Sélectionnez une classe :</strong></label>
-        <select name="classeId" id="classeId" class="form-control" required>
-            <option value="">-- Choisir une classe --</option>
-            <option th:each="classe : ${classes}" th:value="${classe.id}" th:text="${classe.libelle}"></option>
-        </select>
-        <button type="submit" class="btn btn-primary mt-2">Filtrer</button>
-    </form>
+    <h3 class="text-center">Liste des Enseignants</h3>
 
     <!-- Table des matières -->
     <table class="table table-bordered">

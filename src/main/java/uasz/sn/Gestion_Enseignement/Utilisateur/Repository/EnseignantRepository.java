@@ -9,7 +9,6 @@ import java.util.Optional;
 public interface EnseignantRepository extends JpaRepository<Enseignant, Long> {
 
     Optional<Enseignant> findByMatricule(String matricule);
-    List<Enseignant> findByActiveTrue();
     List<Enseignant> findByArchiveTrue();
     Optional<Enseignant> findByUsername(String username);
 }

@@ -153,18 +153,6 @@ document.getElementById("togglePassword").addEventListener("click", function() {
                     <button class="btn btn-info btn-sm" data-toggle="modal" th:attr="data-target='#form_Supprimer_Enseignant' + ${enseignant.id}">
                         <i class="fas fa-edit"></i> Supprimer
                     </button>
-                    <button th:if="${!enseignant.active}" class="btn btn-success btn-sm">
-                        <i class="fas fa-check"></i> Activer
-                    </button>
-                    <button th:if="${enseignant.active}" class="btn btn-danger btn-sm">
-                        <i class="fas fa-times"></i> Désactiver
-                    </button>
-                    <button th:if="${!enseignant.archive}" class="btn btn-warning btn-sm">
-                        <i class="fas fa-archive"></i> Archiver
-                    </button>
-                    <button th:if="${enseignant.archive}" class="btn btn-primary btn-sm">
-                        <i class="fas fa-box-open"></i> Désarchiver
-                    </button>
 
                 </td>
             </tr>
