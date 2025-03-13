@@ -22,6 +22,10 @@ public class ClasseService {
     }
 
     public void ajouterClasse(Classe classe) {
+        // Vérifier si une classe avec le même code ou libellé existe déjà
+        if (classeRepository.existsByCodeOrLibelle(classe.getCode(), classe.getLibelle())) {
+            throw new IllegalArgumentException("Une classe avec ce code ou libellé existe déjà !");
+        }
         classeRepository.save(classe);
     }
 
@@ -43,9 +47,19 @@ public class ClasseService {
         classeRepository.save(classeUpdate);
     }
 
-    public void supprimerClasse(Classe classe) {
+    public void supprimerClasse(Long id) {
+        Classe classe = classeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Classe avec ID " + id + " n'existe pas"));
+
+        // Supprimer les élèves associés à cette classe
+        for (Eleve eleve : classe.getEleves()) {
+            eleve.setClasse(null); // Détacher les élèves de la classe
+        }
+
         classeRepository.delete(classe);
     }
+
+
 
     public List<Eleve> afficherLesEleve(Classe classe) {
         return classeRepository.findByClasse(classe);

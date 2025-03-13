@@ -1,14 +1,20 @@
 package uasz.sn.Gestion_Enseignement.Classes.modele;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.util.List;
+
+@Data
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 public class Classe {
 
     @Id
@@ -25,16 +31,9 @@ public class Classe {
     @PositiveOrZero(message = "L'effectif doit être un nombre positif ou zéro")
     private int effectif;
 
-    // Getters et Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    @OneToMany(mappedBy = "classe")
+    private List<Eleve> eleves; // Liste des élèves dans la class
 
-    public String getCode() { return code; }
-    public void setCode(String code) { this.code = code; }
 
-    public String getLibelle() { return libelle; }
-    public void setLibelle(String libelle) { this.libelle = libelle; }
 
-    public int getEffectif() { return effectif; }
-    public void setEffectif(int effectif) { this.effectif = effectif; }
 }

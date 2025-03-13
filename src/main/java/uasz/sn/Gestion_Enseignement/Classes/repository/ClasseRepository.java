@@ -11,6 +11,7 @@ import java.util.Optional;
 public interface ClasseRepository extends JpaRepository<Classe, Long> {
     @Query("SELECT e FROM Eleve e WHERE e.classe = ?1")
     List<Eleve> findByClasse(Classe classe);
+    boolean existsByCodeOrLibelle(String code, String libelle);
 
     Optional<Classe> findByCode(String code);
 }

@@ -31,21 +31,32 @@ public class ClasseController {
 
     @RequestMapping(value = "/ajouter_classe", method = RequestMethod.POST)
     public String ajouter_classe(Model model, Classe classe) {
-        classeService.ajouterClasse(classe);
-        return "redirect:/classe";
+        try {
+            classeService.ajouterClasse(classe); // Essayer d'ajouter la classe
+            model.addAttribute("successMessage", "Classe ajoutée avec succès !");
+            return "redirect:/classe"; // Rediriger vers la liste des classes après succès
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("errorMessage", e.getMessage()); // Ajouter le message d'erreur à la vue
+            List<Classe> classeList = classeService.afficherToutClasse(); // Récupérer toutes les classes pour afficher correctement la page
+            model.addAttribute("listeDesClasse", classeList);
+            return "classe"; // Retourner à la page des classes avec l'erreur
+        }
     }
+
+
 
     @RequestMapping(value = "/modifier_classe", method = RequestMethod.POST)
     public String modifier_classe(Model model, Classe classe) {
         classeService.modifierClasse(classe);
         return "redirect:/classe";
     }
-
     @RequestMapping(value = "/supprimer_classe", method = RequestMethod.POST)
-    public String supprimer_classe(Model model, Classe classe) {
-        classeService.supprimerClasse(classe);
+    public String supprimerClasse(@RequestParam("id") Long id) {
+        classeService.supprimerClasse(id); // Maintenant, la méthode accepte bien un ID
         return "redirect:/classe";
     }
+
+
 
     @RequestMapping(value = "/details_classe", method = RequestMethod.GET)
     public String details_classe(Model model, @RequestParam("id") Long id) {
