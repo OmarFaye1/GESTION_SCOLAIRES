@@ -80,45 +80,74 @@
     <!-- ✅ Fin popup ajouter un Élève -->
 
     <script>
-     $(document).ready(function() {
-            $("#table_Eleve").DataTable();
-        });
+        $(document).ready(function() {
+         // Initialisation du DataTable
+         $("#table_Eleve").DataTable();
+
        function generateUsername() {
     let prenom = document.getElementById("prenom").value.trim();
     let nom = document.getElementById("nom").value.trim();
-    if (prenom && nom) {
-        document.getElementById("username").value = prenom.charAt(0).toLowerCase() + nom.toLowerCase() + "@gmail.com";
-    }
+    let baseUsername = prenom.charAt(0).toLowerCase() + nom.toLowerCase() + "@gmail.com";
+    let usernameField = document.getElementById("username");
+
+    // Vérifier si le nom d'utilisateur existe déjà
+    fetch(`/verifierUsername?username=${baseUsername}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.exists) {
+                // Si le username existe déjà, ajouter un suffixe numérique
+                let count = 1;
+                let username = baseUsername;
+
+                while (data.exists) {
+                    username = baseUsername.substring(0, baseUsername.lastIndexOf("@")) + count + "@gmail.com";
+                    count++;
+                    // Nouvelle vérification pour ce nom d'utilisateur modifié
+                    fetch(`/verifierUsername?username=${username}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (!data.exists) {
+                                usernameField.value = username;
+                            }
+                        });
+                }
+            } else {
+                usernameField.value = baseUsername;
+            }
+        });
 }
 
-function generatePassword() {
-    // Génération d'un mot de passe aléatoire
-    let password = Math.random().toString(36).substring(2, 6).toUpperCase();
 
-    // Mettre à jour les deux champs : le mot de passe crypté et en clair
-    document.getElementById("password").value = password;
-    document.getElementById("password_clair").value = password;  // Affichage du mot de passe en clair
-}
+         // Fonction pour générer un mot de passe aléatoire
+         function generatePassword() {
+             // Génération d'un mot de passe aléatoire
+             let password = Math.random().toString(36).substring(2, 6).toUpperCase();
 
-// Ajout des écouteurs d'événements pour générer le nom d'utilisateur et le mot de passe
-document.getElementById("prenom").addEventListener("input", generateUsername);
-document.getElementById("nom").addEventListener("input", generateUsername);
-document.getElementById("prenom").addEventListener("blur", generatePassword);
-document.getElementById("nom").addEventListener("blur", generatePassword);
+             // Mettre à jour les deux champs : mot de passe crypté et en clair
+             document.getElementById("password").value = password;
+             document.getElementById("password_clair").value = password;  // Affichage du mot de passe en clair
+         }
 
-// Gestion du bouton pour afficher/masquer le mot de passe
-document.getElementById("togglePassword").addEventListener("click", function() {
-    let passwordInput = document.getElementById("password");
-    let passwordClairInput = document.getElementById("password_clair");
+         // Ajout des écouteurs d'événements pour générer le nom d'utilisateur et le mot de passe
+         document.getElementById("prenom").addEventListener("input", generateUsername);
+         document.getElementById("nom").addEventListener("input", generateUsername);
+         document.getElementById("prenom").addEventListener("blur", generatePassword);
+         document.getElementById("nom").addEventListener("blur", generatePassword);
 
-    if (passwordInput.type === "password") {
-        passwordInput.type = "text";
-        passwordClairInput.type = "text"; // Afficher le mot de passe en clair
-    } else {
-        passwordInput.type = "password";
-        passwordClairInput.type = "password"; // Masquer le mot de passe en clair
-    }
-});
+         // Gestion du bouton pour afficher/masquer le mot de passe
+         document.getElementById("togglePassword").addEventListener("click", function() {
+             let passwordInput = document.getElementById("password");
+             let passwordClairInput = document.getElementById("password_clair");
+
+             if (passwordInput.type === "password") {
+                 passwordInput.type = "text";
+                 passwordClairInput.type = "text"; // Afficher le mot de passe en clair
+             } else {
+                 passwordInput.type = "password";
+                 passwordClairInput.type = "password"; // Masquer le mot de passe en clair
+             }
+         });
+     });
 
     </script>
 
