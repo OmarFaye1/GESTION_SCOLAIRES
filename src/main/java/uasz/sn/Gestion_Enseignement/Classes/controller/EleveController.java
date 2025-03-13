@@ -15,6 +15,7 @@ import uasz.sn.Gestion_Enseignement.Classes.service.EleveService;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping("/eleve")
@@ -62,14 +63,43 @@ public class EleveController {
 
         return "redirect:/details_classe?id=" + eleve.getClasse().getId();
     }
+    @RequestMapping(value = "/modifier", method = RequestMethod.POST)
+    public String modifierEleve(@ModelAttribute Eleve eleve, @RequestParam(value = "classeId", required = false) Long classeId) {
+        // Si une nouvelle classe est envoyée, l'affecter
+        if (eleve.getClasse() == null && classeId != null) {
+            Classe classe = classeService.afficherClasse(classeId);
+            if (classe != null) {
+                eleve.setClasse(classe);
+            }
+        }
+        // Générer le username automatiquement : première lettre du prénom + nom complet + @gmail.com
+        if (eleve.getNom() != null && eleve.getPrenom() != null) {
+            // Génération du username : première lettre du prénom + nom complet + @gmail.com
+            String generatedUsername = eleve.getPrenom().substring(0, 1).toLowerCase() + eleve.getNom().toLowerCase() + "@gmail.com";
+            eleve.setUsername(generatedUsername);
+        }
 
+        // Si le nom ou le prénom ont été modifiés, générer un nouveau mot de passe
+        if (eleve.getNom() != null && eleve.getPrenom() != null) {
+            // Générer un mot de passe basé sur le prénom et nom (par exemple, prénom+nom+timestamp)
+            String generatedPassword = eleve.getPrenom().toLowerCase() + eleve.getNom().toLowerCase() + System.currentTimeMillis();
+            eleve.setPassword(generatedPassword);
+        }
 
-    // ✅ Modifier un élève
-    @PostMapping("/modifier")
-    public String modifierEleve(@ModelAttribute Eleve eleve) {
+        // Hasher le mot de passe avant de le sauvegarder
+        eleve.setPassword(passwordEncoder.encode(eleve.getPassword()));
+
+        // Appel au service pour modifier l'élève
         eleveService.modifierEleve(eleve);
-        return "redirect:/details_classe?id=" + eleve.getClasse().getId();
+
+        // Redirection
+        if (eleve.getClasse() != null) {
+            return "redirect:/details_classe?id=" + eleve.getClasse().getId();
+        } else {
+            return "redirect:/eleve/liste";  // Assurez-vous d'avoir une route pour afficher la liste des élèves
+        }
     }
+
 
 
     // ✅ Supprimer un élève
@@ -86,5 +116,24 @@ public class EleveController {
         model.addAttribute("nom", utilisateur.getNom());
         model.addAttribute("prenom", utilisateur.getPrenom().charAt(0));
         return "template_Eleve"; // Assurez-vous que ce fichier existe dans templates/
+    }
+
+    // Méthode pour afficher les élèves par classe
+    @RequestMapping(value = "/afficherParClasse", method = RequestMethod.GET)
+    public String afficherElevesParClasse(@RequestParam("classeId") Long classeId, Model model) {
+        // Récupérer la classe à partir de son ID
+        Classe classe = classeService.afficherClasse(classeId);
+        if (classe == null) {
+            model.addAttribute("error", "Classe non trouvée");
+            return "error_page"; // Assurez-vous d'avoir une vue pour gérer l'erreur
+        }
+
+        // Appeler le service pour obtenir la liste des élèves de la classe
+        List<Eleve> eleves = eleveService.afficherElevesParClasse(classe);
+        model.addAttribute("listeDesEleve", eleves);
+        model.addAttribute("classe", classe);
+
+        // Retourner le nom de la vue qui affichera la liste des élèves
+        return "details_classe"; // Assurez-vous d'avoir cette vue (liste_eleves_classe.html)
     }
 }

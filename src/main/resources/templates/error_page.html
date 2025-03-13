@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Erreur</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <style>
+        body {
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading">Une erreur est survenue</h4>
+        <p th:text="${error}">Une erreur est survenue lors de la récupération des données.</p>
+        <hr>
+        <p class="mb-0">Veuillez réessayer ou contacter l'administrateur si le problème persiste.</p>
+    </div>
+    <a href="/" class="btn btn-primary">Retour à l'accueil</a>
+</div>
+</body>
+</html>
