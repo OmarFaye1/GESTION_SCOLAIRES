@@ -195,6 +195,8 @@ document.getElementById("togglePassword").addEventListener("click", function() {
     </div>
     <!-- ✅ Fin popup modifier un Élève -->
 
+
+
     <!-- ✅ Début popup supprimer un Élève -->
     <div th:each="eleve : ${listeDesEleve}" class="modal fade" th:attr="id='form_Supprimer_Eleve' + ${eleve.id}" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog">
@@ -216,6 +218,7 @@ document.getElementById("togglePassword").addEventListener("click", function() {
             </div>
         </div>
     </div>
+    <!-- ✅ Fin popup supprimer un Élève -->
     <!-- ✅ Fin popup supprimer un Élève -->
 
     <!-- Bouton Retour -->
