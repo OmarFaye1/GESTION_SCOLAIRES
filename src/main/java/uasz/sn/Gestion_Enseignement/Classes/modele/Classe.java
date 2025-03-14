@@ -34,6 +34,8 @@ public class Classe {
     @OneToMany(mappedBy = "classe")
     private List<Eleve> eleves; // Liste des élèves dans la class
 
+    @OneToMany(mappedBy = "classe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Matiere> matieres; // ✅ Liste des matières enseignées
 
 
 }

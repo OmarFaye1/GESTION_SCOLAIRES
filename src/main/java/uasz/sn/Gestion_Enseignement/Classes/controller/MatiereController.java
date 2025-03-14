@@ -5,11 +5,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import uasz.sn.Gestion_Enseignement.Classes.modele.Classe;
+import uasz.sn.Gestion_Enseignement.Classes.modele.Eleve;
 import uasz.sn.Gestion_Enseignement.Classes.modele.Matiere;
 import uasz.sn.Gestion_Enseignement.Classes.service.ClasseService;
+import uasz.sn.Gestion_Enseignement.Classes.service.EleveService;
 import uasz.sn.Gestion_Enseignement.Classes.service.MatiereService;
 import uasz.sn.Gestion_Enseignement.Utilisateur.Modele.Enseignant;
 import uasz.sn.Gestion_Enseignement.Utilisateur.Service.EnseignantService;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/chefDepartement/matiere")
@@ -23,6 +27,9 @@ public class MatiereController {
 
     @Autowired
     private EnseignantService enseignantService;
+
+    @Autowired
+    private EleveService eleveService;
 
     @GetMapping("/ajouter")
     public String afficherFormulaireAjoutMatiere(Model model) {
@@ -56,4 +63,7 @@ public class MatiereController {
         model.addAttribute("matieres", matiereService.getAllMatieres());
         return "liste_matieres";
     }
+    //pour la liste des voir les eleve de cette classe
+
+
 }
