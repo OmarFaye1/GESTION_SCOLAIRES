@@ -51,10 +51,24 @@ public class EnseignantController {
     @RequestMapping(value = "/Enseignant/Accueil", method = RequestMethod.GET)
     public String accueil_Enseignant(Model model, Principal principal) {
         Utilisateur utilisateur = utilisateurService.rechercher_Utilisateur(principal.getName());
+
+        // Si l'utilisateur est un enseignant, récupérer ses informations
+        if (utilisateur instanceof Enseignant) {
+            Enseignant enseignant = (Enseignant) utilisateur;  // Cast vers Enseignant
+
+            // Ajouter l'ID de l'enseignant au modèle
+            model.addAttribute("idEnseignant", enseignant.getId());
+            model.addAttribute("specialite", enseignant.getSpecialite());  // Par exemple, ajouter la spécialité
+        }
+
+        // Ajouter d'autres informations sur l'utilisateur (nom, prénom, etc.)
         model.addAttribute("nom", utilisateur.getNom());
-        model.addAttribute("prenom", utilisateur.getPrenom().charAt(0));
+        model.addAttribute("prenom", utilisateur.getPrenom().charAt(0)); // Premier caractère du prénom
+
+        // Retourner la vue (template) qui va afficher les informations
         return "template_enseignant";
     }
+
 
     @RequestMapping(value = "/ChefDepartement/Accueil", method = RequestMethod.GET)
     public String accueil_ChefDepartement(Model model, Principal principal) {
@@ -157,6 +171,19 @@ public class EnseignantController {
     }
 
 
+    @GetMapping("/matieres/{enseignantId}")
+    public String afficherMatieres(@PathVariable Long enseignantId, Model model) {
+        // Fetch the Enseignant and Matieres related to this Enseignant
+        Enseignant enseignant = enseignantService.rechercher(enseignantId); // Get the Enseignant by ID
+        List<Matiere> matieres = matiereService.getMatieresByEnseignantId(enseignantId); // Get Matieres by Enseignant's ID
+
+        // Add the Enseignant and Matieres to the model
+        model.addAttribute("enseignant", enseignant);
+        model.addAttribute("matieres", matieres);
+
+        // Return the view for displaying the matieres
+        return "enseignant-matieres";  // Thymeleaf view
+    }
 
 
 

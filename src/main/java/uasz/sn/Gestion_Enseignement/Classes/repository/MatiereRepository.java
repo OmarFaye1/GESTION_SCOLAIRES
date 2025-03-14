@@ -12,5 +12,6 @@ public interface MatiereRepository extends JpaRepository<Matiere, Long> {
     List<Matiere> findByClasseId(Long classeId);
 
     // ✅ Recherche d'une matière par son code
+    List<Matiere> findByEnseignantId(Long enseignantId);
 
 }

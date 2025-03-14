@@ -19,7 +19,9 @@ public class MatiereService {
         return matiereRepository.findByClasseId(classeId);
     }
 
-
+    public List<Matiere> getMatieresByEnseignantId(Long enseignantId) {
+        return matiereRepository.findByEnseignantId(enseignantId);
+    }
 
     // ✅ Récupérer toutes les matières
     public List<Matiere> getAllMatieres() {
