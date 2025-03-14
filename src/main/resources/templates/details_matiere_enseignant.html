@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}"/>
+    <link rel="stylesheet" th:href="@{/css/jquery.dataTables.min.css}"/>
+    <script th:src="@{/js/jquery-3.7.0.js}"></script>
+    <script th:src="@{/js/bootstrap.js}"></script>
+    <script th:src="@{/js/jquery.dataTables.min.js}"></script>
+
+    <title>Détails Classe</title>
+</head>
+<body>
+<div class="container">
+    <div class="row" style="padding-bottom: 10px; padding-top: 10px">
+        <div style="text-align: center">
+            <h3>La liste des élèves de la classe : <span th:text="${classe.code}"></span> - <span th:text="${classe.libelle}"></span></h3>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped" id="table_Eleve">
+            <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Adresse</th>
+                <th>Date de Naissance</th>>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="eleve : ${listeDesEleve}">
+                <td th:text="${eleve.nom}"></td>
+                <td th:text="${eleve.prenom}"></td>
+                <td th:text="${eleve.adresse}"></td>
+                <td th:text="${eleve.date_naissance}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+  $(document).ready(function() {
+    $("#table_Eleve").DataTable();
+  });
+</script>
+</body>
+</html>

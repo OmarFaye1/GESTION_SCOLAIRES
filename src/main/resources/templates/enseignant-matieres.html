@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Matieres de l'Enseignant</title>
+
+  <!-- Liens vers les fichiers CSS externes -->
+  <link rel="stylesheet" th:href="@{/css/bootstrap.css}"/>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+
+</head>
+<body>
+<div class="container">
+  <h1>Matieres de l'Enseignant : <span th:text="${enseignant.nom} + ' ' + ${enseignant.prenom}"></span></h1>
+
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Classe</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="matiere : ${matieres}">
+      <td th:text="${matiere.nom}"></td>
+      <td th:text="${matiere.classe.libelle}"></td>
+      <td>
+        <a class="btn btn-primary btn-sm" th:href="@{/details_matiere(id=${matiere.classe.id})}">Voir</a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <a href="javascript:history.back()" class="btn btn-secondary">Retour</a>
+</div>
+</body>
+</html>
