@@ -93,37 +93,62 @@
     </div>
     <!-- ✅ Fin popup supprimer un Enseignant -->
     <script>
-function generateUsername() {
-    let prenom = document.getElementById("prenom").value.trim();
-    let nom = document.getElementById("nom").value.trim();
-    if (prenom && nom) {
-        document.getElementById("username").value = prenom.charAt(0).toLowerCase() + nom.toLowerCase() + "@gmail.com";
-    }
-}
+        function generateUsername() {
+            let prenom = document.getElementById("prenom").value.trim();
+            let nom = document.getElementById("nom").value.trim();
 
-function generatePassword() {
-    let password = Math.random().toString(36).substring(2, 6).toUpperCase();
-    document.getElementById("password").value = password;
-    document.getElementById("password_clair").value = password;
-}
+            if (prenom && nom) {
+                let baseUsername = prenom.charAt(0).toLowerCase() + nom.toLowerCase() + "@gmail.com";
+                let usernameField = document.getElementById("username");
+                usernameField.value = baseUsername;
 
-document.getElementById("prenom").addEventListener("input", generateUsername);
-document.getElementById("nom").addEventListener("input", generateUsername);
-document.getElementById("prenom").addEventListener("blur", generatePassword);
-document.getElementById("nom").addEventListener("blur", generatePassword);
+                // Vérifier l'existence de ce username côté serveur pour générer un suffixe
+                checkUsernameAvailability(baseUsername);
+            }
+        }
 
-document.getElementById("togglePassword").addEventListener("click", function() {
-    let passwordInput = document.getElementById("password");
-    let passwordClairInput = document.getElementById("password_clair");
+        function checkUsernameAvailability(baseUsername) {
+            // Effectuer une requête AJAX pour vérifier si le username existe déjà
+            fetch(`/verifierUsername?username=${baseUsername}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.exists) {
+                        // Si le username existe déjà, on ajoute un suffixe numérique
+                        let suffix = 1;
+                        let newUsername = baseUsername;
+                        while (data.exists) {
+                            newUsername = baseUsername.replace("@gmail.com", `${suffix}@gmail.com`);
+                            suffix++;
+                        }
+                        document.getElementById("username").value = newUsername;
+                    }
+                });
+        }
 
-    if (passwordInput.type === "password") {
-        passwordInput.type = "text";
-        passwordClairInput.type = "text";
-    } else {
-        passwordInput.type = "password";
-        passwordClairInput.type = "password";
-    }
-});
+        function generatePassword() {
+            let password = Math.random().toString(36).substring(2, 6).toUpperCase();
+            document.getElementById("password").value = password;
+            document.getElementById("password_clair").value = password;
+        }
+
+        document.getElementById("prenom").addEventListener("input", generateUsername);
+        document.getElementById("nom").addEventListener("input", generateUsername);
+        document.getElementById("prenom").addEventListener("blur", generatePassword);
+        document.getElementById("nom").addEventListener("blur", generatePassword);
+
+        document.getElementById("togglePassword").addEventListener("click", function() {
+            let passwordInput = document.getElementById("password");
+            let passwordClairInput = document.getElementById("password_clair");
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                passwordClairInput.type = "text";
+            } else {
+                passwordInput.type = "password";
+                passwordClairInput.type = "password";
+            }
+        });
+
 </script>
 
 

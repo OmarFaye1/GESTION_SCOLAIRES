@@ -72,6 +72,13 @@ public class EleveService {
     public List<Eleve> afficherElevesParClasse(Classe classe) {
         return eleveRepository.findByClasse(classe);
     }
+    // Méthode pour vérifier si le username existe déjà
+    public boolean verifierUsernameExistant(String username) {
+        return eleveRepository.existsByUsername(username);
+    }
+    public boolean usernameExists(String username) {
+        return eleveRepository.existsByUsername(username);
+    }
 
 
 }

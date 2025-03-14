@@ -14,8 +14,7 @@ import uasz.sn.Gestion_Enseignement.Classes.service.ClasseService; // ✅ Ajout 
 import uasz.sn.Gestion_Enseignement.Classes.service.EleveService;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Controller
 @RequestMapping("/eleve")
@@ -33,36 +32,53 @@ public class EleveController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @PostMapping("/ajouter")
+    // ✅ Générer un username unique
+    private String generateUniqueUsername(String prenom, String nom) {
+        String baseUsername = (prenom.charAt(0) + nom).toLowerCase() + "@gmail.com";
+        String username = baseUsername;
+        int count = 1;
+
+        while (eleveService.usernameExists(username)) {
+            username = (prenom.charAt(0) + nom).toLowerCase() + count + "@gmail.com";
+            count++;
+        }
+
+        return username;
+    }
+
+    // ✅ Générer un mot de passe aléatoire
+    private String generateRandomPassword() {
+        return UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+    }
+    @RequestMapping(value = "/ajouter", method = RequestMethod.POST)
     public String ajouterEleve(@ModelAttribute Eleve eleve, @RequestParam("classeId") Long classeId) {
-        if (eleve.getUsername() == null || eleve.getUsername().trim().isEmpty()) {
-            throw new IllegalArgumentException("Le champ username ne peut pas être vide.");
-        }
-        if (eleve.getPassword() == null || eleve.getPassword().trim().isEmpty()) {
-            throw new IllegalArgumentException("Le mot de passe ne peut pas être vide.");
-        }
-
-        // ✅ Hasher le mot de passe avant insertion
-        eleve.setPassword(passwordEncoder.encode(eleve.getPassword()));
-
-        // ✅ Assigner la classe à l'élève
+        // Vérification de la classe
         Classe classe = classeService.afficherClasse(classeId);
         eleve.setClasse(classe);
 
-        // ✅ Vérifier si la liste des rôles est null et l'initialiser
+        // Générer un username unique
+        String username = generateUniqueUsername(eleve.getPrenom(), eleve.getNom());
+        eleve.setUsername(username);
+
+        // Générer un mot de passe aléatoire
+        String rawPassword = generateRandomPassword();
+        eleve.setPassword(passwordEncoder.encode(rawPassword)); // Hasher le mot de passe
+
+        // Initialiser les rôles
         if (eleve.getRoles() == null) {
-            eleve.setRoles(new ArrayList<>()); // Initialisation de la liste
+            eleve.setRoles(new ArrayList<>());
         }
 
-        // ✅ Ajouter le rôle "Eleve"
         Role roleEleve = utilisateurService.ajouter_Role(new Role("Eleve"));
-        eleve.getRoles().add(roleEleve); // Maintenant, la liste n'est plus null
+        eleve.getRoles().add(roleEleve);
 
-        // ✅ Sauvegarder l'élève
+        // Sauvegarde de l'élève
         eleveService.ajouterEleve(eleve);
 
         return "redirect:/details_classe?id=" + eleve.getClasse().getId();
     }
+
+
     @RequestMapping(value = "/modifier", method = RequestMethod.POST)
     public String modifierEleve(@ModelAttribute Eleve eleve, @RequestParam(value = "classeId", required = false) Long classeId) {
         // Si une nouvelle classe est envoyée, l'affecter
@@ -136,4 +152,6 @@ public class EleveController {
         // Retourner le nom de la vue qui affichera la liste des élèves
         return "details_classe"; // Assurez-vous d'avoir cette vue (liste_eleves_classe.html)
     }
+
+
 }
