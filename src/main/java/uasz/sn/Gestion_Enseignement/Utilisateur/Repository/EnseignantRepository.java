@@ -11,4 +11,5 @@ public interface EnseignantRepository extends JpaRepository<Enseignant, Long> {
     Optional<Enseignant> findByMatricule(String matricule);
     List<Enseignant> findByArchiveTrue();
     Optional<Enseignant> findByUsername(String username);
+    boolean existsByEmail(String username);  // Méthode pour vérifier l'existence de l'email
 }

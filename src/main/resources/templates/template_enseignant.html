@@ -2,26 +2,149 @@
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <link rel="stylesheet" th:href="@{/css/bootstrap.css}"/>
-  <link rel="stylesheet" th:href="@{/css/buttons.dataTables.min.css}"/>
-  <link rel="stylesheet" th:href="@{/css/style.css}"/>
-  <link rel="stylesheet" th:href="@{/css/jquery.dataTables.min.css}"/>
-
-  <script th:src="@{/js/jquery-3.7.0.js}"></script>
-  <script th:src="@{/js/bootstrap.js}"></script>
-  <script th:src="@{/js/dataTables.buttons.min.js}"></script>
-  <script th:src="@{/js/jquery.dataTables.min.js}"></script>
-
   <title>Espace Enseignant</title>
+
+  <!-- Liens vers les fichiers CSS externes -->
+  <link rel="stylesheet" th:href="@{/css/bootstrap.css}"/>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+
+  <!-- CSS interne -->
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        padding: 20px;
+    }
+
+    .container {
+        background: white;
+        padding: 20px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        max-width: 800px;
+        margin: auto;
+    }
+
+    h1 {
+        color: #007bff;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    /* Formulaire */
+    form {
+        background: #f9f9f9;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        font-weight: bold;
+    }
+
+    .form-control {
+        border-radius: 5px;
+    }
+
+    button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px;
+        width: 100%;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    /* Messages d'erreur */
+    .text-danger {
+        color: red;
+        font-weight: bold;
+    }
+
+    /* Tableau */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+    }
+
+    th, td {
+        padding: 10px;
+        border: 1px solid #ddd;
+        text-align: left;
+    }
+
+    th {
+        background-color: #007bff;
+        color: white;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .btn-primary {
+        display: inline-block;
+        padding: 8px 12px;
+        color: white;
+        background-color: #007bff;
+        text-decoration: none;
+        border-radius: 5px;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+  </style>
 </head>
 <body>
 
+<div class="container">
+  <h1>Espace Enseignant</h1>
 
-<!-- Lien pour voir les matières de l'enseignant connecté -->
-<a th:href="@{/matieres/{enseignantId}(enseignantId=${idEnseignant})}" class="btn btn-primary">
-  Voir mes matières
-</a>
+  <!-- Formulaire pour saisir le code de la classe -->
+  <form th:action="@{/enseignant/afficherEleves}" method="post">
+    <div class="form-group">
+      <label for="codeClasse">Code de la classe :</label>
+      <input type="text" id="codeClasse" name="codeClasse" class="form-control" required>
+    </div>
+    <button type="submit">Afficher les élèves</button>
+  </form>
 
+  <!-- Affichage des erreurs -->
+  <p th:if="${error}" class="text-danger" th:text="${error}"></p>
+
+  <!-- Liste des élèves -->
+  <div th:if="${eleves != null and not #lists.isEmpty(eleves)}">
+    <h2>Liste des élèves de la classe <span th:text="${classe.libelle}"></span></h2>
+    <table>
+      <thead>
+      <tr>
+        <th>Prénom</th>
+        <th>Nom</th>
+        <th>Adresse</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="eleve : ${eleves}">
+        <td th:text="${eleve.prenom}"></td>
+        <td th:text="${eleve.nom}"></td>
+        <td th:text="${eleve.adresse}"></td>
+        <td>
+          <a th:href="@{/enseignant/saisirNotes(id=${eleve.id})}" class="btn-primary">Note</a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
 
 </body>
 </html>

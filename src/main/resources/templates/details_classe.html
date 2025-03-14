@@ -81,75 +81,73 @@
 
     <script>
         $(document).ready(function() {
-         // Initialisation du DataTable
-         $("#table_Eleve").DataTable();
+            // Initialisation du DataTable
+            $("#table_Enseignant").DataTable();
 
-       function generateUsername() {
-    let prenom = document.getElementById("prenom").value.trim();
-    let nom = document.getElementById("nom").value.trim();
-    let baseUsername = prenom.charAt(0).toLowerCase() + nom.toLowerCase() + "@gmail.com";
-    let usernameField = document.getElementById("username");
+            function generateUsername() {
+                let prenom = document.getElementById("prenom_enseignant").value.trim();
+                let nom = document.getElementById("nom_enseignant").value.trim();
+                let baseUsername = prenom.charAt(0).toLowerCase() + nom.toLowerCase() + "@gmail.com";
+                let usernameField = document.getElementById("username_enseignant");
 
-    // Vérifier si le nom d'utilisateur existe déjà
-    fetch(`/verifierUsername?username=${baseUsername}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.exists) {
-                // Si le username existe déjà, ajouter un suffixe numérique
-                let count = 1;
-                let username = baseUsername;
+                // Vérifier si le nom d'utilisateur existe déjà
+                fetch(`/verifierUsername?username=${baseUsername}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.exists) {
+                            // Si le username existe déjà, ajouter un suffixe numérique
+                            let count = 1;
+                            let username = baseUsername;
 
-                while (data.exists) {
-                    username = baseUsername.substring(0, baseUsername.lastIndexOf("@")) + count + "@gmail.com";
-                    count++;
-                    // Nouvelle vérification pour ce nom d'utilisateur modifié
-                    fetch(`/verifierUsername?username=${username}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            if (!data.exists) {
-                                usernameField.value = username;
+                            while (data.exists) {
+                                username = baseUsername.substring(0, baseUsername.lastIndexOf("@")) + count + "@gmail.com";
+                                count++;
+                                // Nouvelle vérification pour ce nom d'utilisateur modifié
+                                fetch(`/verifierUsername?username=${username}`)
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        if (!data.exists) {
+                                            usernameField.value = username;
+                                        }
+                                    });
                             }
-                        });
-                }
-            } else {
-                usernameField.value = baseUsername;
+                        } else {
+                            usernameField.value = baseUsername;
+                        }
+                    });
             }
+
+            // Fonction pour générer un mot de passe aléatoire
+            function generatePassword() {
+                let password = Math.random().toString(36).substring(2, 6).toUpperCase();
+
+                // Mettre à jour les deux champs : mot de passe crypté et en clair
+                document.getElementById("password_enseignant").value = password;
+                document.getElementById("password_clair_enseignant").value = password;
+            }
+
+            // Ajout des écouteurs d'événements pour générer le nom d'utilisateur et le mot de passe
+            document.getElementById("prenom_enseignant").addEventListener("input", generateUsername);
+            document.getElementById("nom_enseignant").addEventListener("input", generateUsername);
+            document.getElementById("prenom_enseignant").addEventListener("blur", generatePassword);
+            document.getElementById("nom_enseignant").addEventListener("blur", generatePassword);
+
+            // Gestion du bouton pour afficher/masquer le mot de passe
+            document.getElementById("togglePasswordEnseignant").addEventListener("click", function() {
+                let passwordInput = document.getElementById("password_enseignant");
+                let passwordClairInput = document.getElementById("password_clair_enseignant");
+
+                if (passwordInput.type === "password") {
+                    passwordInput.type = "text";
+                    passwordClairInput.type = "text";
+                } else {
+                    passwordInput.type = "password";
+                    passwordClairInput.type = "password";
+                }
+            });
         });
-}
-
-
-         // Fonction pour générer un mot de passe aléatoire
-         function generatePassword() {
-             // Génération d'un mot de passe aléatoire
-             let password = Math.random().toString(36).substring(2, 6).toUpperCase();
-
-             // Mettre à jour les deux champs : mot de passe crypté et en clair
-             document.getElementById("password").value = password;
-             document.getElementById("password_clair").value = password;  // Affichage du mot de passe en clair
-         }
-
-         // Ajout des écouteurs d'événements pour générer le nom d'utilisateur et le mot de passe
-         document.getElementById("prenom").addEventListener("input", generateUsername);
-         document.getElementById("nom").addEventListener("input", generateUsername);
-         document.getElementById("prenom").addEventListener("blur", generatePassword);
-         document.getElementById("nom").addEventListener("blur", generatePassword);
-
-         // Gestion du bouton pour afficher/masquer le mot de passe
-         document.getElementById("togglePassword").addEventListener("click", function() {
-             let passwordInput = document.getElementById("password");
-             let passwordClairInput = document.getElementById("password_clair");
-
-             if (passwordInput.type === "password") {
-                 passwordInput.type = "text";
-                 passwordClairInput.type = "text"; // Afficher le mot de passe en clair
-             } else {
-                 passwordInput.type = "password";
-                 passwordClairInput.type = "password"; // Masquer le mot de passe en clair
-             }
-         });
-     });
-
     </script>
+
 
 
     <div class="table-responsive">
@@ -225,25 +223,34 @@
                     </div>
                 </form>
 
-                <!-- Script pour générer automatiquement le username à partir du nom et prénom -->
                 <script th:inline="javascript">
                     /*<![CDATA[*/
-                      var nomField = document.getElementById("mod_nom__[[${eleve.id}]]");
-                      var prenomField = document.getElementById("mod_prenom__[[${eleve.id}]]");
-                      var usernameField = document.getElementById("mod_username__[[${eleve.id}]]");
+                    document.addEventListener("DOMContentLoaded", function () {
+                        /* Sélectionne tous les enseignants dynamiquement */
+                        /*[[${enseignants}]].forEach(function (enseignant) {
+                            var nomField = document.getElementById("mod_nom__" + enseignant.id);
+                            var prenomField = document.getElementById("mod_prenom__" + enseignant.id);
+                            var usernameField = document.getElementById("mod_username__" + enseignant.id);
 
-                      function updateUsername() {
-                          var nom = nomField.value.trim().toLowerCase();
-                          var prenom = prenomField.value.trim().toLowerCase();
-                          if (prenom && nom) {
-                              usernameField.value = prenom.charAt(0) + nom + "@gmail.com";
-                          }
-                      }
+                            function updateUsername() {
+                                if (nomField && prenomField && usernameField) {
+                                    var nom = nomField.value.trim().toLowerCase();
+                                    var prenom = prenomField.value.trim().toLowerCase();
+                                    if (prenom && nom) {
+                                        usernameField.value = prenom.charAt(0) + nom + "@gmail.com";
+                                    }
+                                }
+                            }
 
-                      nomField.addEventListener("input", updateUsername);
-                      prenomField.addEventListener("input", updateUsername);
+                            if (nomField && prenomField) {
+                                nomField.addEventListener("input", updateUsername);
+                                prenomField.addEventListener("input", updateUsername);
+                            }
+                        });*/
+                    });
                     /*]]>*/
                 </script>
+
             </div>
         </div>
     </div>

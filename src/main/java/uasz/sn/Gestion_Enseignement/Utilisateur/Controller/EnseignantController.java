@@ -19,9 +19,8 @@ import uasz.sn.Gestion_Enseignement.Utilisateur.Modele.Enseignant;
 import uasz.sn.Gestion_Enseignement.Utilisateur.Service.EnseignantService;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.security.SecureRandom;
+import java.util.*;
 
 @Controller
 public class EnseignantController {
@@ -41,34 +40,16 @@ public class EnseignantController {
 
     @Autowired
     private EleveService eleveService; // ✅ Injection du service pour gérer les élèves
-
+    @Autowired
     private PasswordEncoder passwordEncoder;
-
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 
     @RequestMapping(value = "/Enseignant/Accueil", method = RequestMethod.GET)
     public String accueil_Enseignant(Model model, Principal principal) {
         Utilisateur utilisateur = utilisateurService.rechercher_Utilisateur(principal.getName());
-
-        // Si l'utilisateur est un enseignant, récupérer ses informations
-        if (utilisateur instanceof Enseignant) {
-            Enseignant enseignant = (Enseignant) utilisateur;  // Cast vers Enseignant
-
-            // Ajouter l'ID de l'enseignant au modèle
-            model.addAttribute("idEnseignant", enseignant.getId());
-            model.addAttribute("specialite", enseignant.getSpecialite());  // Par exemple, ajouter la spécialité
-        }
-
-        // Ajouter d'autres informations sur l'utilisateur (nom, prénom, etc.)
         model.addAttribute("nom", utilisateur.getNom());
-        model.addAttribute("prenom", utilisateur.getPrenom().charAt(0)); // Premier caractère du prénom
-
-        // Retourner la vue (template) qui va afficher les informations
+        model.addAttribute("prenom", utilisateur.getPrenom().charAt(0));
         return "template_enseignant";
     }
-
 
     @RequestMapping(value = "/ChefDepartement/Accueil", method = RequestMethod.GET)
     public String accueil_ChefDepartement(Model model, Principal principal) {
@@ -78,60 +59,110 @@ public class EnseignantController {
         return "template_ChefDepartement";
     }
 
+
     @RequestMapping(value = "/ChefDepartement/ajouterEnseignant", method = RequestMethod.POST)
-    public String ajouter_Enseignant(@ModelAttribute Enseignant enseignant,
-                                     @RequestParam String username,
-                                     @RequestParam String motDePasse) {
-        // Vérifiez ici si l'email n'est pas nul et qu'il est bien défini
-        if (username == null || username.isEmpty()) {
-            return "redirect:/errorPage"; // Redirigez vers une page d'erreur si l'email est manquant
-        }
+    public String ajouter_Enseignant(@ModelAttribute Enseignant enseignant) {
+        // Génération automatique du username
+        String baseUsername = enseignant.getNom().substring(0, 1).toLowerCase() + enseignant.getPrenom().toLowerCase() + "@gmail.com";
+        String username = generateUniqueUsername(enseignant.getNom(), enseignant.getPrenom());
+        enseignant.setEmail(username);
 
-        // Log de l'email reçu
-        System.out.println("Username: " + username);
-
-        enseignant.setEmail( username);  // Assurez-vous que l'email est bien défini
-
-        // Encodage du mot de passe
-        String encodedPassword = passwordEncoder().encode(motDePasse);
-        enseignant.setPassword(encodedPassword);
+        // Génération et encodage du mot de passe
+        String motDePasse = generateRandomPassword();
+        enseignant.setPassword(passwordEncoder.encode(motDePasse));
         enseignant.setDateCreation(new Date());
 
-        // Ajout du rôle
-        Role role = utilisateurService.ajouter_Role(new Role("Enseignant"));
-        List<Role> roles = new ArrayList<>();
-        roles.add(role);
-        enseignant.setRoles(roles);
+        // Ajout du rôle "Enseignant"
+        Role role = new Role("Enseignant");
+        enseignant.setRoles(Collections.singletonList(role));
 
-        // Log des valeurs de l'objet Enseignant avant l'ajout
-        System.out.println("Enseignant: " + enseignant);
-
-        // Ajouter l'enseignant à la base de données
+        // Ajout dans la base de données
         enseignantService.ajouter(enseignant);
+
         return "redirect:/ChefDepartement/Enseignant";
     }
-    @PostMapping("/supprimer")
-    public String supprimerEnseignant(@RequestParam("id") Long id, RedirectAttributes redirectAttributes) {
-        try {
-            enseignantService.supprimer(id);
-            redirectAttributes.addFlashAttribute("success", "Enseignant supprimé avec succès !");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Erreur lors de la suppression !");
-        }
-        return "redirect:/chefDepartement/enseignants"; // Redirige vers la liste des enseignants
-    }
 
+
+    @RequestMapping(value = "/supprimer", method = RequestMethod.POST)
+    public String supprimerEnseignant(@RequestParam("id") Long enseignantId, RedirectAttributes redirectAttributes) {
+        try {
+            enseignantService.supprimer(enseignantId);
+            redirectAttributes.addFlashAttribute("message", "Enseignant supprimé avec succès !");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("erreur", "Erreur lors de la suppression !");
+        }
+
+        return "redirect:/ChefDepartement/Enseignant"; // Redirection vers la liste
+    }
 
 
     @RequestMapping(value = "/ChefDepartement/modifierEnseignant", method = RequestMethod.POST)
-    public String modifier_Enseignant(Enseignant enseignant) {
+    public String modifierEnseignant(@ModelAttribute Enseignant enseignant) {
+        System.out.println("🔄 Modification de l'enseignant avec ID : " + enseignant.getId());
+
         Enseignant enseignantModifie = enseignantService.rechercher(enseignant.getId());
-        enseignantModifie.setMatricule(enseignant.getMatricule());
+
+        if (enseignantModifie == null) {
+            System.out.println("❌ Enseignant non trouvé !");
+            return "redirect:/ChefDepartement/Enseignant?erreur=notfound";
+        }
+
+        // Vérifier si le nom/prénom a changé
+        boolean nomChange = !enseignantModifie.getNom().equalsIgnoreCase(enseignant.getNom());
+        boolean prenomChange = !enseignantModifie.getPrenom().equalsIgnoreCase(enseignant.getPrenom());
+
+        if (nomChange || !enseignantModifie.getPrenom().equals(enseignant.getPrenom())) {
+            String nouveauUsername = generateUniqueUsername(enseignant.getNom(), enseignant.getPrenom());
+            enseignantModifie.setUsername(nouveauUsername);
+
+            // Génération d'un nouveau mot de passe sécurisé
+            String nouveauPassword = generateRandomPassword();
+            enseignantModifie.setPassword(passwordEncoder.encode(nouveauPassword));
+
+            // Simuler l'envoi du mot de passe par e-mail
+            System.out.println("📩 Nouveau mot de passe généré et envoyé : " + nouveauPassword);
+        }
+
+        // Mise à jour des autres champs
         enseignantModifie.setNom(enseignant.getNom());
         enseignantModifie.setPrenom(enseignant.getPrenom());
-        enseignantService.modifier(enseignantModifie);
+        enseignantModifie.setMatricule(enseignant.getMatricule());
+
+        // Sauvegarde en base de données
+        enseignantService.modifierEnseignant(enseignantModifie);
+        System.out.println("✅ Enseignant mis à jour avec succès !");
+
         return "redirect:/ChefDepartement/Enseignant";
     }
+
+    private String generateUniqueUsername(String nom, String prenom) {
+        // Supposons que tu veuilles générer un username de la forme : "p.nom@domaine.com"
+        String baseUsername = (prenom.charAt(0) + nom).toLowerCase().replaceAll("\\s+", "").replaceAll("[^a-zA-Z0-9]", "");
+        String domaine = "@gmail.com"; // Tu peux changer cela selon ton besoin
+        String username = baseUsername + "@" + "gmail.com";
+
+        // Vérifier l'unicité du username
+        int count = 1;
+        while (enseignantService.usernameExists(username)) { // Cette méthode doit être créée dans le service
+            username = baseUsername + count + "@domaine.com";
+            count++;
+        }
+        return username;
+    }
+
+    private String generateRandomPassword() {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*!";
+        SecureRandom random = new SecureRandom();
+        StringBuilder password = new StringBuilder();
+
+        for (int i = 0; i < 10; i++) {
+            int index = random.nextInt(chars.length());
+            password.append(chars.charAt(index));
+        }
+
+        return password.toString();
+    }
+
 
     @GetMapping("enseignant/saisirNotes")
     public String saisirNotes(@RequestParam("id") Long eleveId, Model model) {
@@ -171,19 +202,6 @@ public class EnseignantController {
     }
 
 
-    @GetMapping("/matieres/{enseignantId}")
-    public String afficherMatieres(@PathVariable Long enseignantId, Model model) {
-        // Fetch the Enseignant and Matieres related to this Enseignant
-        Enseignant enseignant = enseignantService.rechercher(enseignantId); // Get the Enseignant by ID
-        List<Matiere> matieres = matiereService.getMatieresByEnseignantId(enseignantId); // Get Matieres by Enseignant's ID
-
-        // Add the Enseignant and Matieres to the model
-        model.addAttribute("enseignant", enseignant);
-        model.addAttribute("matieres", matieres);
-
-        // Return the view for displaying the matieres
-        return "enseignant-matieres";  // Thymeleaf view
-    }
 
 
 

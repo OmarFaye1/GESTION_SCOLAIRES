@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @PrimaryKeyJoinColumn(name = "id")
 public class Enseignant extends Enseignants {
-
+    @Column(unique = true)  // Garantir l'unicité du matricule
     private String matricule;
     private String email;
     private String password_clair;
