@@ -14,6 +14,7 @@ import uasz.sn.Gestion_Enseignement.Classes.service.ClasseService; // ✅ Ajout 
 import uasz.sn.Gestion_Enseignement.Classes.service.EleveService;
 
 import java.security.Principal;
+import java.security.SecureRandom;
 import java.util.*;
 
 @Controller
@@ -46,9 +47,17 @@ public class EleveController {
         return username;
     }
 
-    // ✅ Générer un mot de passe aléatoire
     private String generateRandomPassword() {
-        return UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*!";
+        SecureRandom random = new SecureRandom();
+        StringBuilder password = new StringBuilder();
+
+        for (int i = 0; i < 10; i++) {
+            int index = random.nextInt(chars.length());
+            password.append(chars.charAt(index));
+        }
+
+        return password.toString();
     }
     @RequestMapping(value = "/ajouter", method = RequestMethod.POST)
     public String ajouterEleve(@ModelAttribute Eleve eleve, @RequestParam("classeId") Long classeId) {
@@ -62,6 +71,7 @@ public class EleveController {
 
         // Générer un mot de passe aléatoire
         String rawPassword = generateRandomPassword();
+        System.out.println("Generated raw password: " + rawPassword); // Vérification du mot de passe généré
         eleve.setPassword(passwordEncoder.encode(rawPassword)); // Hasher le mot de passe
 
         // Initialiser les rôles

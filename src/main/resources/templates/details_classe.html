@@ -61,12 +61,14 @@
                         <div class="input-group">
                             <input type="password" class="form-control" name="password" id="password" required readonly/>
                             <div class="input-group-append">
-                                <button class="btn btn-secondary" type="button" id="togglePassword"><i class="fa fa-eye"></i></button>
+                                <button class="btn btn-secondary" type="button" id="togglePassword">
+                                    <i class="fa fa-eye"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
 
-                    <!-- ✅ Champ supplémentaire pour récupérer et afficher le mot de passe en clair -->
+                    <!-- ✅ Champ supplémentaire pour afficher le mot de passe en clair -->
                     <div class="form-group">
                         <label>Mot de passe en clair (pour affichage uniquement)</label>
                         <input type="text" class="form-control" id="password_clair" name="password_clair" required readonly/>
@@ -79,73 +81,80 @@
     </div>
     <!-- ✅ Fin popup ajouter un Élève -->
 
+
     <script>
         $(document).ready(function() {
-            // Initialisation du DataTable
-            $("#table_Enseignant").DataTable();
+     // Fonction pour générer un nom d'utilisateur unique
+     function generateUsername() {
+         let prenom = document.getElementById("prenom").value.trim();
+         let nom = document.getElementById("nom").value.trim();
+         let baseUsername = prenom.charAt(0).toLowerCase() + nom.toLowerCase() + "@gmail.com";
+         let usernameField = document.getElementById("username");
 
-            function generateUsername() {
-                let prenom = document.getElementById("prenom_enseignant").value.trim();
-                let nom = document.getElementById("nom_enseignant").value.trim();
-                let baseUsername = prenom.charAt(0).toLowerCase() + nom.toLowerCase() + "@gmail.com";
-                let usernameField = document.getElementById("username_enseignant");
+         // Vérifier si le nom d'utilisateur existe déjà
+         fetch(`/verifierUsername?username=${baseUsername}`)
+             .then(response => response.json())
+             .then(data => {
+                 if (data.exists) {
+                     let count = 1;
+                     let username = baseUsername;
 
-                // Vérifier si le nom d'utilisateur existe déjà
-                fetch(`/verifierUsername?username=${baseUsername}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.exists) {
-                            // Si le username existe déjà, ajouter un suffixe numérique
-                            let count = 1;
-                            let username = baseUsername;
+                     function checkUniqueUsername() {
+                         fetch(`/verifierUsername?username=${username}`)
+                             .then(response => response.json())
+                             .then(data => {
+                                 if (data.exists) {
+                                     count++;
+                                     username = baseUsername.replace("@gmail.com", count + "@gmail.com");
+                                     checkUniqueUsername();
+                                 } else {
+                                     usernameField.value = username;
+                                 }
+                             });
+                     }
 
-                            while (data.exists) {
-                                username = baseUsername.substring(0, baseUsername.lastIndexOf("@")) + count + "@gmail.com";
-                                count++;
-                                // Nouvelle vérification pour ce nom d'utilisateur modifié
-                                fetch(`/verifierUsername?username=${username}`)
-                                    .then(response => response.json())
-                                    .then(data => {
-                                        if (!data.exists) {
-                                            usernameField.value = username;
-                                        }
-                                    });
-                            }
-                        } else {
-                            usernameField.value = baseUsername;
-                        }
-                    });
-            }
+                     checkUniqueUsername();
+                 } else {
+                     usernameField.value = baseUsername;
+                 }
+             });
+     }
 
-            // Fonction pour générer un mot de passe aléatoire
-            function generatePassword() {
-                let password = Math.random().toString(36).substring(2, 6).toUpperCase();
+     // Fonction pour générer un mot de passe sécurisé
+     function generatePassword() {
+         let chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*!?";
+         let password = "";
+         for (let i = 0; i < 10; i++) {
+             let randomIndex = Math.floor(Math.random() * chars.length);
+             password += chars[randomIndex];
+         }
 
-                // Mettre à jour les deux champs : mot de passe crypté et en clair
-                document.getElementById("password_enseignant").value = password;
-                document.getElementById("password_clair_enseignant").value = password;
-            }
+         // Mettre à jour les deux champs : mot de passe crypté et en clair
+         document.getElementById("password").value = password;
+         document.getElementById("password_clair").value = password;
+     }
 
-            // Ajout des écouteurs d'événements pour générer le nom d'utilisateur et le mot de passe
-            document.getElementById("prenom_enseignant").addEventListener("input", generateUsername);
-            document.getElementById("nom_enseignant").addEventListener("input", generateUsername);
-            document.getElementById("prenom_enseignant").addEventListener("blur", generatePassword);
-            document.getElementById("nom_enseignant").addEventListener("blur", generatePassword);
+     // Ajout des écouteurs d'événements pour générer les informations automatiquement
+     $("#prenom, #nom").on("input", function() {
+         generateUsername();
+         generatePassword(); // Génère aussi un mot de passe à chaque changement
+     });
 
-            // Gestion du bouton pour afficher/masquer le mot de passe
-            document.getElementById("togglePasswordEnseignant").addEventListener("click", function() {
-                let passwordInput = document.getElementById("password_enseignant");
-                let passwordClairInput = document.getElementById("password_clair_enseignant");
+     // Gestion du bouton pour afficher/masquer le mot de passe
+     $("#togglePassword").on("click", function() {
+         let passwordInput = $("#password");
+         let passwordClairInput = $("#password_clair");
 
-                if (passwordInput.type === "password") {
-                    passwordInput.type = "text";
-                    passwordClairInput.type = "text";
-                } else {
-                    passwordInput.type = "password";
-                    passwordClairInput.type = "password";
-                }
-            });
-        });
+         if (passwordInput.attr("type") === "password") {
+             passwordInput.attr("type", "text");
+             passwordClairInput.attr("type", "text");
+         } else {
+             passwordInput.attr("type", "password");
+             passwordClairInput.attr("type", "password");
+         }
+     });
+ });
+
     </script>
 
 
