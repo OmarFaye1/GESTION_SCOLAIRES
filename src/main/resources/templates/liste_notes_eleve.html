@@ -19,7 +19,7 @@
         </thead>
         <tbody>
         <tr th:each="note : ${notes}">
-            <td th:text="${note.matiereId}"></td> <!-- Afficher le nom de la matière -->
+            <td th:text="${note.matiere.nom}"></td> <!-- Afficher le nom de la matière -->
             <td th:text="${note.note}"></td>
             <td>
                 <a th:href="@{/notes/supprimer/{id}(id=${note.id})}" class="btn btn-danger">Supprimer</a>

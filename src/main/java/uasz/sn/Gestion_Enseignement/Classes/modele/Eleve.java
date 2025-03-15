@@ -15,7 +15,7 @@ import java.util.Date;
 @AllArgsConstructor
 public class Eleve extends Utilisateur { // Héritage de Utilisateur
 
-    private String code;
+
     private String adresse;
     private String password_clair;
 

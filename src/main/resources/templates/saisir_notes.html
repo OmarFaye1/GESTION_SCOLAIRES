@@ -1,103 +1,39 @@
 <!DOCTYPE html>
-<html lang="fr" xmlns:th="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Saisir les Notes</title>
-  <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
-  <style>
-    /* ✅ Styles globaux */
-    body {
-        background-color: #f8f9fa;
-        font-family: 'Arial', sans-serif;
-    }
-
-    .container {
-        max-width: 600px;
-        margin: 50px auto;
-        background-color: #fff;
-        padding: 30px;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    h2 {
-        color: #007bff;
-        text-align: center;
-        margin-bottom: 20px;
-    }
-
-    /* ✅ Style pour les messages d'erreur */
-    .alert-danger {
-        background-color: #f8d7da;
-        color: #721c24;
-        border-color: #f5c6cb;
-        padding: 10px;
-        border-radius: 5px;
-        text-align: center;
-        font-weight: bold;
-    }
-
-    /* ✅ Style des champs de formulaire */
-    label {
-        font-weight: bold;
-        color: #333;
-        margin-top: 10px;
-    }
-
-    .form-control {
-        border-radius: 5px;
-        padding: 10px;
-        border: 1px solid #ced4da;
-        transition: all 0.3s ease-in-out;
-    }
-
-    .form-control:focus {
-        border-color: #007bff;
-        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-    }
-
-    /* ✅ Style du bouton */
-    .btn-primary {
-        background-color: #007bff;
-        border: none;
-        padding: 10px 15px;
-        width: 100%;
-        border-radius: 5px;
-        font-size: 16px;
-        transition: all 0.3s ease-in-out;
-    }
-
-    .btn-primary:hover {
-        background-color: #0056b3;
-    }
-  </style>
+  <title>Gestion des Notes</title>
 </head>
 <body>
+<h1>Notes de l'élève <span th:text="${eleve.nom}"></span></h1>
 
-<div class="container">
-  <h2>Saisir les notes</h2>
+<form th:action="@{/notes/ajouter}" method="post">
+  <input type="hidden" name="idEleve" th:value="${eleve.id}">
+  <label>Note :</label>
+  <input type="text" name="valeur" required>
+  <button type="submit">Ajouter</button>
+</form>
 
-  <!-- ✅ Message d'erreur si le code est incorrect -->
-  <div th:if="${errorMessage}" class="alert alert-danger">
-    <strong>Erreur :</strong> <span th:text="${errorMessage}"></span>
-  </div>
+<h2>Liste des Notes</h2>
+<table>
+  <tr>
+    <th>Note</th>
+    <th>Actions</th>
+  </tr>
+  <tr th:each="note : ${notes}">
+    <td th:text="${note.valeur}"></td>
+    <td>
+      <form th:action="@{/notes/modifier}" method="post" style="display:inline;">
+        <input type="hidden" name="idEleve" th:value="${eleve.id}">
+        <input type="hidden" name="id" th:value="${note.id}">
+        <input type="text" name="valeur" th:value="${note.valeur}" required>
+        <button type="submit">Modifier</button>
+      </form>
 
-  <form th:action="@{/enseignant/verifierCodeMatiere}" method="post">
-    <input type="hidden" name="eleveId" th:value="${eleve.id}"/>
+      <a th:href="@{/notes/supprimer(id=${note.id}, idEleve=${eleve.id})}">Supprimer</a>
+    </td>
+  </tr>
+</table>
 
-    <label for="matiereId">Choisir une matière :</label>
-    <select id="matiereId" name="matiereId" class="form-control" required>
-      <option value="">-- Sélectionner --</option>
-      <option th:each="matiere : ${matieres}" th:value="${matiere.id}" th:text="${matiere.nom}"></option>
-    </select>
-
-    <label for="codeMatiere">Code de la matière :</label>
-    <input type="text" id="codeMatiere" name="codeMatiere" class="form-control" required>
-
-    <button type="submit" class="btn btn-primary mt-3">Vérifier</button>
-  </form>
-</div>
-
+<a href="/">Retour</a>
 </body>
 </html>

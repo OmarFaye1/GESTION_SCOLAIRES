@@ -24,10 +24,7 @@ public class NoteService {
     @Autowired
     private MatiereService matiereService; // ✅ Ajout du service Matiere
 
-    // ✅ Trouver les notes d'un élève
-    public List<Note> trouverNotesParEleve(Long eleveId) {
-        return noteRepository.findByEleveId(eleveId);
-    }
+    public List<Note> trouverNotesParEleve(Long eleveId)   {return noteRepository.findByEleveId(eleveId) ; }
 
     // ✅ Trouver une note par ID
     public Note trouverNoteParId(Long id) {
@@ -58,8 +55,8 @@ public class NoteService {
     }
 
 
-    // ✅ Supprimer une note
-    public void supprimerNote(Long id) {
-        noteRepository.deleteById(id);
     }
-}
+
+
+
+

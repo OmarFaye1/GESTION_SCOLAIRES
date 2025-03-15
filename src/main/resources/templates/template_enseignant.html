@@ -101,6 +101,14 @@
     .btn-primary:hover {
         background-color: #0056b3;
     }
+
+    .btn-back {
+        background-color: #6c757d;
+    }
+
+    .btn-back:hover {
+        background-color: #5a6268;
+    }
   </style>
 </head>
 <body>
@@ -108,43 +116,21 @@
 <div class="container">
   <h1>Espace Enseignant</h1>
 
-  <!-- Formulaire pour saisir le code de la classe -->
-  <form th:action="@{/enseignant/afficherEleves}" method="post">
-    <div class="form-group">
-      <label for="codeClasse">Code de la classe :</label>
-      <input type="text" id="codeClasse" name="codeClasse" class="form-control" required>
-    </div>
-    <button type="submit">Afficher les élèves</button>
-  </form>
-
-  <!-- Affichage des erreurs -->
-  <p th:if="${error}" class="text-danger" th:text="${error}"></p>
-
-  <!-- Liste des élèves -->
-  <div th:if="${eleves != null and not #lists.isEmpty(eleves)}">
-    <h2>Liste des élèves de la classe <span th:text="${classe.libelle}"></span></h2>
-    <table>
-      <thead>
-      <tr>
-        <th>Prénom</th>
-        <th>Nom</th>
-        <th>Adresse</th>
-        <th>Actions</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr th:each="eleve : ${eleves}">
-        <td th:text="${eleve.prenom}"></td>
-        <td th:text="${eleve.nom}"></td>
-        <td th:text="${eleve.adresse}"></td>
-        <td>
-          <a th:href="@{/enseignant/saisirNotes(id=${eleve.id})}" class="btn-primary">Note</a>
-        </td>
-      </tr>
-      </tbody>
-    </table>
+  <!-- Bouton pour retourner aux matières de l'enseignant -->
+  <div>
+    <a th:id="autoRedirectBtn" th:href="@{/enseignant/matieres}" class="btn-back">Retour aux Matières</a>
   </div>
 </div>
 
+<!-- Script JavaScript pour cliquer automatiquement -->
+<script>
+  // Attendre que la page soit complètement chargée
+  window.onload = function() {
+    // Simuler un clic sur le bouton pour rediriger automatiquement
+    document.getElementById('autoRedirectBtn').click();
+  };
+</script>
+
 </body>
 </html>
+

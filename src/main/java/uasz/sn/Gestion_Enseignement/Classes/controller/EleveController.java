@@ -10,8 +10,10 @@ import uasz.sn.Gestion_Enseignement.Authentification.modele.Utilisateur;
 import uasz.sn.Gestion_Enseignement.Authentification.service.UtilisateurService;
 import uasz.sn.Gestion_Enseignement.Classes.modele.Classe;
 import uasz.sn.Gestion_Enseignement.Classes.modele.Eleve;
+import uasz.sn.Gestion_Enseignement.Classes.modele.Note;
 import uasz.sn.Gestion_Enseignement.Classes.service.ClasseService; // ✅ Ajout du service manquant
 import uasz.sn.Gestion_Enseignement.Classes.service.EleveService;
+import uasz.sn.Gestion_Enseignement.Classes.service.NoteService;
 
 import java.security.Principal;
 import java.security.SecureRandom;
@@ -26,6 +28,8 @@ public class EleveController {
 
     @Autowired
     private EleveService eleveService;
+    @Autowired
+    private NoteService noteService;
 
     @Autowired
     private ClasseService classeService; // ✅ Ajout de la déclaration et injection
@@ -162,6 +166,7 @@ public class EleveController {
         // Retourner le nom de la vue qui affichera la liste des élèves
         return "details_classe"; // Assurez-vous d'avoir cette vue (liste_eleves_classe.html)
     }
+
 
 
 }

@@ -25,8 +25,10 @@
                 <th>Nom</th>
                 <th>Prénom</th>
                 <th>Adresse</th>
-                <th>Date de Naissance</th>>
-                <th>Actions</th>
+                <th>Date de Naissance</th><!-- Retirer le chevron en trop -->
+                <th>Action</th>
+
+
             </tr>
             </thead>
             <tbody>
@@ -35,11 +37,18 @@
                 <td th:text="${eleve.prenom}"></td>
                 <td th:text="${eleve.adresse}"></td>
                 <td th:text="${eleve.date_naissance}"></td>
+                <td>
+                    <a class="btn btn-primary btn-sm" th:href="@{/notes/eleve/{eleveId}(id=${eleve.id})}">Saisir notes</a>
+                </td>
+
+
             </tr>
             </tbody>
         </table>
+        <button class="btn btn-primary" onclick="history.back()">Retour</button>
     </div>
 </div>
+
 
 <script>
   $(document).ready(function() {

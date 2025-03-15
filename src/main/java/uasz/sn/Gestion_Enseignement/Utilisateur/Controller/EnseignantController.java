@@ -201,6 +201,24 @@ public class EnseignantController {
         return "template_Eleve";
     }
 
+    @GetMapping("/enseignant/matieres")
+    public String voirMatieres(Model model, Principal principal) {
+        // Récupère l'utilisateur connecté
+        Utilisateur utilisateur = utilisateurService.rechercher_Utilisateur(principal.getName());
+
+        // Recherche l'enseignant par son ID
+        Enseignant enseignant = enseignantService.rechercher(utilisateur.getId());
+
+        // Récupère les matières de l'enseignant connecté
+        List<Matiere> matieres = enseignantService.getMatieresByEnseignant(enseignant.getId());
+
+        // Ajoute les matières et les informations de l'enseignant au modèle
+        model.addAttribute("matieres", matieres);
+        model.addAttribute("nom", enseignant.getNom());  // Ajoute le nom
+        model.addAttribute("prenom", enseignant.getPrenom());  // Ajoute le prénom
+
+        return "enseignant_matiere";  // Page avec la liste des matières et des informations de l'enseignant
+    }
 
 
 

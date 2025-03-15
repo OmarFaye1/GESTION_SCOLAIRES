@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" th:href="@{/css/bootstrap.css}"/>
+  <link rel="stylesheet" th:href="@{/css/buttons.dataTables.min.css}"/>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+  <link rel="stylesheet" th:href="@{/css/jquery.dataTables.min.css}"/>
+
+  <script th:src="@{/js/jquery-3.7.0.js}"></script>
+  <script th:src="@{/js/bootstrap.js}"></script>
+  <script th:src="@{/js/dataTables.buttons.min.js}"></script>
+  <script th:src="@{/js/jquery.dataTables.min.js}"></script>
+
+  <title>Matières de l'Enseignant</title>
+  <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+  <div class="row" style="padding-bottom: 10px; padding-top: 10px">
+    <div style="text-align: center">
+      <h3>Liste des Matières pour : <span th:text="${prenom} + ' ' + ${nom}"></span></h3>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-bordered table-striped" id="table_Matieres">
+      <thead>
+      <tr>
+        <th>Nom de la Matière</th>
+        <th>Classe</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="matiere : ${matieres}">
+        <td th:text="${matiere.nom}"></td>
+        <td th:text="${matiere.classe.libelle}"></td>
+        <td>
+          <a class="btn btn-primary btn-sm" th:href="@{/details_matiere(id=${matiere.classe.id})}">Voir</a>
+
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <button class="btn btn-primary" onclick="history.back()">Retour</button>
+  </div>
+
+</div>
+
+
+</body>
+</html>

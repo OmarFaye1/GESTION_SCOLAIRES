@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import uasz.sn.Gestion_Enseignement.Classes.modele.Matiere;
 import uasz.sn.Gestion_Enseignement.Utilisateur.Modele.Enseignant;
 import uasz.sn.Gestion_Enseignement.Utilisateur.Repository.EnseignantRepository;
 import uasz.sn.Gestion_Enseignement.exception.ResourceAlreadyExistException;
@@ -103,5 +104,11 @@ public class EnseignantService {
     }
     // Vérifier si le username existe déjà
 
+    // Récupérer les matières d'un enseignant par son ID
+    public List<Matiere> getMatieresByEnseignant(Long enseignantId) {
+        Enseignant enseignant = enseignantRepository.findById(enseignantId)
+                .orElseThrow(() -> new RuntimeException("Enseignant introuvable"));
+        return enseignant.getMatieres(); // Retourne la liste des matières de cet enseignant
+    }
 
 }
